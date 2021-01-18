@@ -14,7 +14,7 @@ For complicated use cases use https://github.com/mozilla-comm/ical.js/
 
     // Parse from iCal string
 
-    const result = ICalParser(iCalString);
+    const result = ICalParser.parseFromICal(iCalString);
 
 ## TODO
 
