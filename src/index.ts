@@ -307,6 +307,10 @@ const ICalParser: any = {
 
     return { value: ICalParser.getBaseDate(iCalDate) };
   },
+  /**
+   * Format to ISO date
+   * @param date
+   */
   getBaseDate: (date: string): string => {
     const baseDate: string = date;
 
