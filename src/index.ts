@@ -93,8 +93,6 @@ const ICalParser: any = {
       (stringEvent: string) => ICalParser.parseEventFromString(stringEvent)
     );
 
-    console.log("OBJ EVENT", events);
-
     return {
       events,
     };
