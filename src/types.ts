@@ -1,4 +1,9 @@
 
+export interface IDateTimeObject {
+    value: string;
+    timezone?: string;
+}
+
 export interface IKeyValue {
     key: string;
     value: any;
@@ -26,4 +31,17 @@ export interface IEventParsedFromICal {
 
 export interface IResultFromICal {
     events: IEventParsedFromICal[];
+}
+
+export interface ICalObject {
+    calendar: ICalendarObj;
+    events: IEventParsedFromICal[];
+}
+
+export interface ICalendarObj {
+    begin: string;
+    prodid: string;
+    calscale?: string;
+    version: string;
+    end: string;
 }

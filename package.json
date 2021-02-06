@@ -1,6 +1,6 @@
 {
   "name": "ical-js-parser",
-  "version": "0.0.1",
+  "version": "0.0.1-beta.6",
   "author": "nibdo",
   "license": "MIT",
   "private": false,
@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@types/node": "^12.19.12",
+    "nodemon": "^2.0.7",
     "typescript": "^4.1.3"
   },
   "devDependencies": {
@@ -20,6 +21,7 @@
     "tslint": "^6.1.3"
   },
   "scripts": {
+    "start": "tsc && node dist/index.js",
     "build": "npm run compile && npm run copy",
     "compile": "tsc",
     "copy": "cp ./package.json ./dist/ && cp ./LICENSE ./dist/ && cp ./README.md ./dist/"
