@@ -41,6 +41,6 @@ For complicated use cases use https://github.com/mozilla-comm/ical.js/
 ## TODO
 
 - tests
-- parsing to iCal
+- parsing JSON to iCal
 - alarms
 - calendar timezones
