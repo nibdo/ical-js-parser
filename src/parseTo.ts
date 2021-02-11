@@ -1,10 +1,12 @@
-import { ICalObject } from "./types";
+import { ICalObject } from './types';
 import {
   ATTENDEE_KEY,
   checkIfIsDateKey,
   DATE_ONLY_LENGTH,
-  MAX_LINE_LENGTH
-} from "./common";
+  MAX_LINE_LENGTH,
+  ORGANIZER_KEY,
+} from './common';
+import { DateTime } from 'luxon';
 
 const CALENDAR_BEGIN: string = 'BEGIN:VCALENDAR\n';
 const CALENDAR_END: string = 'END:VCALENDAR';
@@ -13,7 +15,7 @@ const EVENT_END: string = 'END:VEVENT\n';
 
 const foldLine = (row: string): string => {
   let result: string = '';
-  const foldCount: number = row.length / MAX_LINE_LENGTH
+  const foldCount: number = row.length / MAX_LINE_LENGTH;
 
   if (row.length < MAX_LINE_LENGTH) {
     return row;
@@ -21,7 +23,7 @@ const foldLine = (row: string): string => {
 
   let tempRow: string = row;
 
-  for (let i: number = 1; i <= foldCount +1 ; i += 1) {
+  for (let i: number = 1; i <= foldCount + 1; i += 1) {
     if (tempRow.length <= MAX_LINE_LENGTH) {
       result = result + tempRow;
 
@@ -32,7 +34,7 @@ const foldLine = (row: string): string => {
       const newTempRow: string = tempRow.slice(i * MAX_LINE_LENGTH);
 
       if (!newTempRow) {
-        tempRow = tempRow.slice(MAX_LINE_LENGTH)
+        tempRow = tempRow.slice(MAX_LINE_LENGTH);
       } else {
         tempRow = tempRow.slice(i * MAX_LINE_LENGTH);
       }
@@ -40,7 +42,7 @@ const foldLine = (row: string): string => {
   }
 
   return result;
-}
+};
 
 const addKeyValue = (prevData: string, key: string, value: string): string =>
   `${prevData}${key}${value}\n`;
@@ -60,24 +62,59 @@ const transformToICalKey = (key: string): string => {
   }
 
   return result;
-}
+};
 
 const mapObjToString = (obj: any): string => {
   let result: string = '';
 
   for (const [key, value] of Object.entries(obj)) {
     if (key !== 'mailto') {
-      result = result + key + '=' + value + ';';
+      result = result + key.toUpperCase() + '=' + value + ';';
     } else {
-      result = result.slice(0, -1) + ':mailto:' + value
+      result = result.slice(0, -1) + ':mailto:' + value;
     }
   }
 
   return result;
+};
+
+const removeDot = (date: string): string => {
+  const indexOfDot: number = date.indexOf('.');
+  const indexOfZ: number = date.indexOf('Z');
+
+  if (indexOfDot === -1) {
+    return date;
+  }
+
+  return date.slice(0, indexOfDot);
+};
+
+const removeZ = (date: string): string => {
+  const indexOfZ: number = date.indexOf('Z');
+
+  if (indexOfZ === -1) {
+  return date;
 }
 
-const parseSimpleDate = (date: string): string =>
-    date.replace('-', '');
+  return date.slice(0, indexOfZ);
+}
+
+const addZ = (date: string): string => {
+  const indexOfZ: number = date.indexOf('Z');
+
+  if (indexOfZ !== -1) {
+    return date;
+  }
+
+  return date + 'Z';
+}
+
+
+const parseSimpleDate = (date: string): string => {
+  let result: string = removeDot(date.replace('-', ''));
+
+  return addZ(result);
+};
 
 const parseUtcToTimestamp = (utcDate: string): string => {
   let result: string = '';
@@ -86,7 +123,7 @@ const parseUtcToTimestamp = (utcDate: string): string => {
     const letter: string = utcDate[i];
 
     if (i === utcDate.length - 1 && letter === 'Z') {
-      return result;
+      return addZ(removeDot(result));
     }
 
     if (letter !== ':' && letter !== '-') {
@@ -94,40 +131,52 @@ const parseUtcToTimestamp = (utcDate: string): string => {
     }
   }
 
+  result = removeDot(result)
+
   return result;
-}
+};
+
 
 const parseUtcDateObj = (utcDate: any): string =>
-    parseUtcToTimestamp(utcDate.value);
+  addZ(parseUtcToTimestamp(utcDate.value));
 
 const parseDateWithTimezone = (dateObj: any): string => {
-  const formatFromUtc: string = parseUtcToTimestamp(dateObj.value)
+  const adjustedDateTime: string = DateTime.fromISO(dateObj.value).setZone(dateObj.timezone).toString();
 
-return  `TZID=${dateObj.timezone}:${formatFromUtc}`
-}
+  const formatFromUtc: string = removeZ(parseUtcToTimestamp(adjustedDateTime));
+
+  return `TZID=${dateObj.timezone}:${formatFromUtc}`;
+};
 
 /**
  * Build iCal string
  * @param iCalObj
  */
 const parseTo = (iCalObj: ICalObject): string => {
-  const {calendar, events} = iCalObj;
+  const { calendar, events } = iCalObj;
 
-  const {prodid, version} = calendar;
+  const { prodid, version, calscale, method } = calendar;
 
-  let result: string = "";
+  let result: string = '';
 
   // Add calendar info
-    result += CALENDAR_BEGIN;
+  result += CALENDAR_BEGIN;
 
-    // Add prodid
-    result = addKeyValue(result, 'PRODID:', prodid);
+  // Add prodid
+  result = addKeyValue(result, 'PRODID:', prodid);
 
-    // Add version
-    result = addKeyValue(result, 'VERSION:', version);
+  // Add version
+  result = addKeyValue(result, 'VERSION:', version);
 
+  if (method) {
+    result = addKeyValue(result, 'METHOD:', method);
+  }
 
-    // Loop over all events
+  if (calscale) {
+    result = addKeyValue(result, 'CALSCALE:', calscale);
+  }
+
+  // Loop over all events
   for (const event of events) {
     // Add event
     result = addKeyValue(result, 'BEGIN:', 'VEVENT');
@@ -139,35 +188,59 @@ const parseTo = (iCalObj: ICalObject): string => {
 
       // Rules
       const isValueArray: boolean = Array.isArray(valueAny);
-      const delimiter: string = isValueArray ? ';' : ':';
+      let delimiter: string = isValueArray ? ';' : ':';
       const isDateKey: boolean = checkIfIsDateKey(key);
       const isAttendeeKey: boolean = key === ATTENDEE_KEY;
+      const isOrganizerKey: boolean = key === ORGANIZER_KEY;
 
       // Different rules for dates
       if (isDateKey) {
         const hasTimezone: boolean = valueAny.timezone;
         const isSimpleObj: boolean = !hasTimezone && valueAny.value;
-        const isSimpleDate: boolean = !hasTimezone && !isSimpleObj && valueAny.length === DATE_ONLY_LENGTH;
+        const isSimpleDate: boolean =
+          !hasTimezone && !isSimpleObj && valueAny.length === DATE_ONLY_LENGTH;
 
         if (isSimpleDate) {
           // Date only for all day events
-          result += foldLine(`${transformToICalKey(key)}${delimiter}${parseSimpleDate(valueAny)}`) + '\n'
+          result +=
+            foldLine(
+              `${transformToICalKey(key)}${delimiter}${parseSimpleDate(
+                valueAny
+              )}`
+            ) + '\n';
         } else if (isSimpleObj) {
-          result += foldLine(`${transformToICalKey(key)}${delimiter}${parseUtcDateObj(valueAny)}`) + '\n'
+          result +=
+            foldLine(
+              `${transformToICalKey(key)}${delimiter}${parseUtcDateObj(
+                valueAny
+              )}`
+            ) + '\n';
         } else if (hasTimezone) {
+          delimiter = ';';
           // Object with timezone and value
-          result += foldLine(`${transformToICalKey(key)}${delimiter}${parseDateWithTimezone(valueAny)}`) + '\n'
+          result +=
+            foldLine(
+              `${transformToICalKey(key)}${delimiter}${parseDateWithTimezone(
+                valueAny
+              )}`
+            ) + '\n';
         } else {
-          result += foldLine(`${transformToICalKey(key)}${delimiter}${parseUtcToTimestamp(valueAny)}`) + '\n'
+          result +=
+            foldLine(
+              `${transformToICalKey(key)}${delimiter}${parseUtcToTimestamp(
+                valueAny
+              )}`
+            ) + '\n';
         }
-
-
       } else if (isAttendeeKey) {
         for (const item of valueAny) {
-          result += foldLine('ATTENDEE;' + mapObjToString(item)) + '\n'
+          result += foldLine('ATTENDEE;' + mapObjToString(item)) + '\n';
         }
+      } else if (isOrganizerKey) {
+        result += foldLine('ORGANIZER;' + mapObjToString(valueAny)) + '\n';
       } else {
-        result += foldLine(`${transformToICalKey(key)}${delimiter}${valueAny}`) + '\n'
+        result +=
+          foldLine(`${transformToICalKey(key)}${delimiter}${valueAny}`) + '\n';
       }
     }
     result = addKeyValue(result, 'END:', 'VEVENT');

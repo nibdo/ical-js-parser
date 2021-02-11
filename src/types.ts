@@ -41,6 +41,7 @@ export interface ICalObject {
 export interface ICalendarObj {
     begin: string;
     prodid: string;
+    method?: string;
     calscale?: string;
     version: string;
     end: string;
