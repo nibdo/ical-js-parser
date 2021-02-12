@@ -63,11 +63,11 @@ const VALARM_RECURSION_MAX_COUNT: number = 50;
     }
 
 
-    const parseEventFromString = (stringEvent: string): IEventParsedFromICal => {
+    const parseEventFromString = (rawString: string): IEventParsedFromICal => {
         const eventObj: any = {};
 
         // Format event string, merge multiline values
-        const eventWithMergedRows: string[] = mergeRows(stringEvent);
+        const eventWithMergedRows: string[] = mergeRows(rawString);
 
         for (const stringEvent of eventWithMergedRows) {
             const keyValue: IKeyValue = splitToKeyValueObj(stringEvent);
@@ -145,11 +145,10 @@ const VALARM_RECURSION_MAX_COUNT: number = 50;
 
         // Check if key is date parameter
         const isDateKey: boolean = checkIfIsDateKey(key);
-        const isRawKey: boolean = key === 'organizer';
 
         // Set values
         if (hasNestedValues && key !== "rrule") {
-            value = isDateKey || isRawKey
+            value = isDateKey
                 ? item.slice(nestedDelimiterIndex + 1)
                 : parseNestedValues(item.slice(nestedDelimiterIndex + 1));
         } else {
