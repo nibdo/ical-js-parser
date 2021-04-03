@@ -12,6 +12,20 @@ const CALENDAR_END_KEY_VALUE = 'END:VCALENDAR';
 
 const VALARM_RECURSION_MAX_COUNT = 50;
 
+const ALWAYS_STRING_VALUES: string[] = ['summary', 'description', 'location'];
+
+const extractAlwaysStringValue = (value: any): string => {
+  if (!value) {
+    return '';
+  }
+
+  if (value.indexOf(':') === value.length) {
+    return '';
+  }
+
+  return value.slice(value.indexOf(':') + 1)
+}
+
 /**
  * Split string events to array
  * @param iCalEvents
@@ -83,6 +97,31 @@ const parseEventFromString = (rawString: string): IEventParsedFromICal => {
   return eventObj;
 };
 
+const formatString = (value: any): string => {
+  if (!value || (typeof value === 'string' && value.length < 1 )) {
+    return '';
+  }
+
+  if (typeof value !== 'string') {
+    return value;
+  }
+
+  let formattedValue: string = value.trim();
+
+  if (formattedValue.length < 3) {
+    if (formattedValue === '/r') {
+      return ''
+    }
+    return formattedValue;
+  }
+
+  if (formattedValue.slice(formattedValue.length - 2, formattedValue.length) === '/r') {
+    return formattedValue.slice(0, formattedValue.length - 2)
+  }
+
+  return formattedValue;
+}
+
 /**
  * Merge rows for same key
  * @param stringEvent
@@ -142,17 +181,24 @@ const splitToKeyValueObj = (item: string): IKeyValue => {
   // Check if key is date parameter
   const isDateKey: boolean = checkIfIsDateKey(key);
 
+
+
   // Set values
-  if (hasNestedValues && key !== 'rrule') {
+ if (hasNestedValues && ALWAYS_STRING_VALUES.indexOf(key) !== -1) {
+    // Should format nested values summary, location and description to simple
+    // string
+    value = extractAlwaysStringValue(item);
+
+  } else if (hasNestedValues && key !== 'rrule') {
     value = isDateKey
-      ? item.slice(nestedDelimiterIndex + 1)
+      ? formatString(item.slice(nestedDelimiterIndex + 1))
       : parseNestedValues(item.slice(nestedDelimiterIndex + 1));
   } else {
-    value = item.slice(basicDelimiterIndex + 1);
+    value = formatString(item.slice(basicDelimiterIndex + 1));
   }
 
   if (isDateKey) {
-    value = parseICalDate(key, value);
+    value = formatString(parseICalDate(key, value));
   }
 
   return {
@@ -189,19 +235,20 @@ const parseNestedValues = (values: string): IKeyValue | string => {
 
     const { key, value } = keyValue;
 
+
     // ** Handle exception with date in nested value ** //
     // f.e. date without time
     if (key === 'value' && value.indexOf('DATE') !== -1) {
-      result = value.slice(value.indexOf('DATE'));
+      result = formatString(value.slice(value.indexOf('DATE')));
     } else if (value.indexOf(':mailto') !== -1) {
-      result[key.toUpperCase()] = value
+      result[key.toUpperCase()] = formatString(value
         .slice(0, value.indexOf(':mailto'))
-        .replace(' ', '');
-      result['mailto'] = value.slice(
+        .replace(' ', ''));
+      result['mailto'] = formatString(value.slice(
         value.indexOf(':mailto:') + ':mailto:'.length
-      );
+      ));
     } else {
-      result[key.toUpperCase()] = value;
+      result[key.toUpperCase()] = formatString(value);
     }
   }
 
@@ -295,7 +342,7 @@ const getBaseDate = (date: string): string => {
  * Get key values from each line to build obj
  * @param iCalStringEvent
  */
-const parseFrom = (iCalStringEvent: string): ICalObject => {
+const toJSON = (iCalStringEvent: string): ICalObject => {
   // Get vcalendar props
   const vCalendarString: string = getVCalendarProps(iCalStringEvent);
 
@@ -327,4 +374,4 @@ const parseFrom = (iCalStringEvent: string): ICalObject => {
   };
 };
 
-export default parseFrom;
+export default toJSON;

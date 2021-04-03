@@ -93,11 +93,11 @@ const removeZ = (date: string): string => {
   const indexOfZ: number = date.indexOf('Z');
 
   if (indexOfZ === -1) {
-  return date;
-}
+    return date;
+  }
 
   return date.slice(0, indexOfZ);
-}
+};
 
 const addZ = (date: string): string => {
   const indexOfZ: number = date.indexOf('Z');
@@ -107,8 +107,7 @@ const addZ = (date: string): string => {
   }
 
   return date + 'Z';
-}
-
+};
 
 const parseSimpleDate = (date: string): string => {
   let result: string = removeDot(date.replace('-', ''));
@@ -131,17 +130,18 @@ const parseUtcToTimestamp = (utcDate: string): string => {
     }
   }
 
-  result = removeDot(result)
+  result = removeDot(result);
 
   return result;
 };
-
 
 const parseUtcDateObj = (utcDate: any): string =>
   addZ(parseUtcToTimestamp(utcDate.value));
 
 const parseDateWithTimezone = (dateObj: any): string => {
-  const adjustedDateTime: string = DateTime.fromISO(dateObj.value).setZone(dateObj.timezone).toString();
+  const adjustedDateTime: string = DateTime.fromISO(dateObj.value)
+    .setZone(dateObj.timezone)
+    .toString();
 
   const formatFromUtc: string = removeZ(parseUtcToTimestamp(adjustedDateTime));
 
@@ -152,7 +152,7 @@ const parseDateWithTimezone = (dateObj: any): string => {
  * Build iCal string
  * @param iCalObj
  */
-const parseTo = (iCalObj: ICalObject): string => {
+const toString = (iCalObj: ICalObject): string => {
   const { calendar, events } = iCalObj;
 
   const { prodid, version, calscale, method } = calendar;
@@ -253,4 +253,4 @@ const parseTo = (iCalObj: ICalObject): string => {
   return result;
 };
 
-export default parseTo;
+export default toString;

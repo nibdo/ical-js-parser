@@ -1,14 +1,14 @@
-import parseFrom from "./parseFrom";
-import parseTo from "./parseTo";
+import toJSON from './toJSON';
+import toString from './toString';
 
-export interface IICalParser {
-  parseFrom: any;
-  parseTo: any;
+export interface ICalParser {
+  toJSON: Function;
+  toString: Function;
 }
 
-const ICalParser: IICalParser = {
-  parseFrom,
-  parseTo
-}
+const ICalParser: ICalParser = {
+  toJSON,
+  toString,
+};
 
 export default ICalParser;
