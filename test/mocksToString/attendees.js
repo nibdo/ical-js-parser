@@ -9,7 +9,7 @@ const attendees = {
     {
       lastModified: '2021-03-30T19:32:00Z',
       dtstamp: '2021-03-30T19:32:00Z',
-      uid: 'LlqugAe----1165932647582@test.com',
+      uid: 'CaqugAe----1165932647582@test.com',
       summary: 'saf',
       organizer: { EMAIL: 'buia@test.com', mailto: 'buia@test.com' },
       attendee: [

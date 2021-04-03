@@ -43,7 +43,7 @@ describe('Parse to String from JSON', function () {
     assert.equal(lines[3], 'BEGIN:VEVENT');
     assert.equal(lines[4], 'LAST-MODIFIED:20210330T193200Z');
     assert.equal(lines[5], 'DTSTAMP:20210330T193200Z');
-    assert.equal(lines[6], 'UID:LlqugAe----1165932647582@test.com');
+    assert.equal(lines[6], 'UID:CaqugAe----1165932647582@test.com');
     assert.equal(lines[7], 'SUMMARY:saf');
     assert.equal(
       lines[8],
