@@ -1,4 +1,4 @@
-import { ICalObject } from './types';
+import { ICalJSON } from './types';
 import {
   ATTENDEE_KEY,
   checkIfIsDateKey,
@@ -152,7 +152,7 @@ const parseDateWithTimezone = (dateObj: any): string => {
  * Build iCal string
  * @param iCalObj
  */
-const toString = (iCalObj: ICalObject): string => {
+const toString = (iCalObj: ICalJSON): string => {
   const { calendar, events } = iCalObj;
 
   const { prodid, version, calscale, method } = calendar;
