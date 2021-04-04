@@ -1,23 +1,54 @@
-import { ATTENDEE_KEY, checkIfIsDateKey } from '../common';
+import { checkIfIsDateKey } from '../common';
 import { CalendarJSON, EventJSON, ICalJSON, KeyValue } from '../types';
+import { parseICalDate } from './dateHelpers';
+import {
+  ALWAYS_STRING_VALUES,
+  ATTENDEE_KEY,
+  CALENDAR_END_KEY_VALUE,
+  EVENT_BEGIN_KEY_VALUE,
+  MAILTO_KEY,
+  MAILTO_KEY_WITH_DELIMITER,
+  RRULE_ICAL_KEY,
+  RRULE_KEY,
+  UID_KEY,
+  VALARM_RECURSION_MAX_COUNT,
+} from '../constants';
+import {
+  extractAlwaysStringValue,
+  normalizeKey,
+  normalizeString,
+  splitRowsToArray,
+} from './formatHelpers';
+import { validateICalString } from './validator';
 
-const EVENT_BEGIN_KEY_VALUE = 'BEGIN:VEVENT';
-const CALENDAR_END_KEY_VALUE = 'END:VCALENDAR';
+/**
+ * Extract only calendar string part
+ * @param iCalString
+ */
+const getVCalendarString = (iCalString: string): string => {
+  return iCalString.slice(0, iCalString.indexOf(EVENT_BEGIN_KEY_VALUE));
+};
 
-const VALARM_RECURSION_MAX_COUNT = 50;
+/**
+ * Parse calendar string to calendar JSON
+ * @param calendarString
+ */
+const formatVCalendarStringToObject = (
+  calendarString: string
+): CalendarJSON => {
+  const calendarRows: string[] = splitRowsToArray(calendarString);
 
-const ALWAYS_STRING_VALUES: string[] = ['summary', 'description', 'location'];
+  const result: any = {};
 
-const extractAlwaysStringValue = (value: any): string => {
-  if (!value) {
-    return '';
+  for (const row of calendarRows) {
+    const keyValue: KeyValue = splitRowToKeyValueObj(row);
+
+    const { key, value } = keyValue;
+
+    result[key] = value;
   }
 
-  if (value.indexOf(':') === value.length) {
-    return '';
-  }
-
-  return value.slice(value.indexOf(':') + 1);
+  return result;
 };
 
 /**
@@ -34,36 +65,6 @@ const splitStringEvents = (iCalEvents: string) => {
 
   // Add missing delimiter from split to each record
   result = result.map((item: string) => `${EVENT_BEGIN_KEY_VALUE}${item}`);
-
-  return result;
-};
-
-/**
- * Extract only calendar string part
- * @param iCalString
- */
-const getVCalendarProps = (iCalString: string): string => {
-  return iCalString.slice(0, iCalString.indexOf(EVENT_BEGIN_KEY_VALUE));
-};
-
-/**
- * Parse calendar string to calendar JSON
- * @param calendarString
- */
-const formatVCalendarStringToObject = (
-  calendarString: string
-): CalendarJSON => {
-  const calendarRows: string[] = mergeRowsToArray(calendarString);
-
-  const result: any = {};
-
-  for (const row of calendarRows) {
-    const keyValue: KeyValue = splitToKeyValueObj(row);
-
-    const { key, value } = keyValue;
-
-    result[key] = value;
-  }
 
   return result;
 };
@@ -93,14 +94,14 @@ const removeVAlarm = (
   return eventStringResult;
 };
 
-const parseEventFromString = (rawString: string): EventJSON => {
+const getOneEventJSON = (rawString: string): EventJSON => {
   const eventObj: any = {};
 
   // Format event string, merge multiline values
-  const eventWithMergedRows: string[] = mergeRowsToArray(rawString);
+  const eventWithMergedRows: string[] = splitRowsToArray(rawString);
 
   for (const stringEvent of eventWithMergedRows) {
-    const keyValue: KeyValue = splitToKeyValueObj(stringEvent);
+    const keyValue: KeyValue = splitRowToKeyValueObj(stringEvent);
 
     const { key, value } = keyValue;
 
@@ -117,72 +118,11 @@ const parseEventFromString = (rawString: string): EventJSON => {
   return eventObj;
 };
 
-const formatString = (value: any): string => {
-  if (!value || (typeof value === 'string' && value.length < 1)) {
-    return '';
-  }
-
-  if (typeof value !== 'string') {
-    return value;
-  }
-
-  let formattedValue: string = value.trim();
-
-  if (formattedValue.length < 3) {
-    if (formattedValue === '/r') {
-      return '';
-    }
-    return formattedValue;
-  }
-
-  if (
-    formattedValue.slice(formattedValue.length - 2, formattedValue.length) ===
-    '/r'
-  ) {
-    return formattedValue.slice(0, formattedValue.length - 2);
-  }
-
-  return formattedValue;
-};
-
-/**
- * Merge rows for same key
- * @param stringEvent
- */
-const mergeRowsToArray = (stringEvent: string): string[] => {
-  // Split key values for every new line
-  const rowsArray: string[] = stringEvent.split('\n');
-
-  // Fix formatting with multiline values
-  // Multiline values starts with empty space
-  const fixedRowsArray: string[] = [];
-
-  for (const currentRow of rowsArray) {
-    if (currentRow.length > 0) {
-      // Join this row with previous row if starts with empty space
-      if (currentRow[0] && currentRow[0] === ' ') {
-        // Merge previous and current row
-        const mergedRows: string =
-          fixedRowsArray[fixedRowsArray.length - 1] + currentRow;
-
-        // Replace last item with joined rows
-        fixedRowsArray.pop();
-        fixedRowsArray.push(mergedRows);
-      } else {
-        // Just add row
-        fixedRowsArray.push(currentRow);
-      }
-    }
-  }
-
-  return fixedRowsArray;
-};
-
 /**
  * Split string to separate key and value
  * @param item
  */
-const splitToKeyValueObj = (item: string): KeyValue => {
+const splitRowToKeyValueObj = (item: string): KeyValue => {
   // Get basic delimiter indexes
   const basicDelimiterIndex: number = item.indexOf(':');
   const nestedDelimiterIndex: number = item.indexOf(';');
@@ -195,10 +135,13 @@ const splitToKeyValueObj = (item: string): KeyValue => {
   let value: any;
 
   // Set keys first
-  if (hasNestedValues && item.slice(0, nestedDelimiterIndex) !== 'RRULE') {
-    key = transformKey(item.slice(0, nestedDelimiterIndex));
+  if (
+    hasNestedValues &&
+    item.slice(0, nestedDelimiterIndex) !== RRULE_ICAL_KEY
+  ) {
+    key = normalizeKey(item.slice(0, nestedDelimiterIndex));
   } else {
-    key = transformKey(item.slice(0, basicDelimiterIndex));
+    key = normalizeKey(item.slice(0, basicDelimiterIndex));
   }
 
   // Check if key is date parameter
@@ -209,16 +152,21 @@ const splitToKeyValueObj = (item: string): KeyValue => {
     // Should format nested values summary, location and description to simple
     // string
     value = extractAlwaysStringValue(item);
-  } else if (hasNestedValues && key !== 'rrule') {
+  } else if (hasNestedValues && key !== RRULE_KEY) {
     value = isDateKey
-      ? formatString(item.slice(nestedDelimiterIndex + 1))
+      ? normalizeString(item.slice(nestedDelimiterIndex + 1))
       : parseNestedValues(item.slice(nestedDelimiterIndex + 1));
   } else {
-    value = formatString(item.slice(basicDelimiterIndex + 1));
+    value = normalizeString(item.slice(basicDelimiterIndex + 1));
   }
 
   if (isDateKey) {
-    value = formatString(parseICalDate(key, value));
+    value = normalizeString(parseICalDate(value));
+  }
+
+  // UID cant have any space between chars
+  if (key === UID_KEY) {
+    value = value.replace(' ', '');
   }
 
   return {
@@ -235,7 +183,7 @@ const splitNestedValues = (item: string): KeyValue => {
   const nestedValueDelimiterIndex: number = item.indexOf('=');
 
   return {
-    key: transformKey(item.slice(0, nestedValueDelimiterIndex)),
+    key: normalizeKey(item.slice(0, nestedValueDelimiterIndex)),
     value: item.slice(nestedValueDelimiterIndex + 1),
   };
 };
@@ -258,102 +206,25 @@ const parseNestedValues = (values: string): KeyValue | string => {
     // ** Handle exception with date in nested value ** //
     // f.e. date without time
     if (key === 'value' && value.indexOf('DATE') !== -1) {
-      result = formatString(value.slice(value.indexOf('DATE')));
-    } else if (value.indexOf(':mailto') !== -1) {
-      result[key.toUpperCase()] = formatString(
-        value.slice(0, value.indexOf(':mailto')).replace(' ', '')
+      result = normalizeString(value.slice(value.indexOf('DATE')));
+    } else if (value.indexOf(MAILTO_KEY_WITH_DELIMITER) !== -1) {
+      result[key.toUpperCase()] = normalizeString(
+        value
+          .slice(0, value.indexOf(MAILTO_KEY_WITH_DELIMITER))
+          .replace(' ', '')
       );
-      result['mailto'] = formatString(
-        value.slice(value.indexOf(':mailto:') + ':mailto:'.length)
+      result[MAILTO_KEY] = normalizeString(
+        value.slice(
+          value.indexOf(`${MAILTO_KEY_WITH_DELIMITER}:`) +
+            `${MAILTO_KEY_WITH_DELIMITER}:`.length
+        )
       );
     } else {
-      result[key.toUpperCase()] = formatString(value);
+      result[key.toUpperCase()] = normalizeString(value);
     }
   }
 
   return result;
-};
-/**
- * Lower case all keys, replace dashes with camelCase
- * @param keyOriginal
- */
-const transformKey = (keyOriginal: string): string => {
-  let resultKey = '';
-  let newKey: string = keyOriginal.toLowerCase();
-
-  let willBeUpperCase = false;
-
-  // Remove dashes, format to camelCase
-  for (const letter of newKey) {
-    const isDash: boolean = letter === '-';
-
-    if (isDash) {
-      willBeUpperCase = true;
-    } else if (willBeUpperCase) {
-      resultKey += letter.toUpperCase();
-      willBeUpperCase = false;
-    } else {
-      resultKey += letter;
-    }
-  }
-
-  return resultKey;
-};
-
-/**
- * Better formatting for dates
- * // TODO refactor
- * @param key
- * @param iCalDate
- */
-const parseICalDate = (key: string, iCalDate: string): any => {
-  // No special handling for other dates
-  const isTzidDate: boolean = iCalDate.indexOf('TZID') !== -1;
-  const isAllDayEvent: boolean = iCalDate.indexOf('DATE:') !== -1;
-
-  const isSimpleDate: boolean = !isTzidDate && !isAllDayEvent;
-
-  if (isSimpleDate) {
-    return getBaseDate(iCalDate);
-  }
-
-  if (isAllDayEvent) {
-    const baseDate: string = iCalDate.slice(
-      iCalDate.indexOf('DATE:') + 'DATE:'.length
-    );
-    const year: string = baseDate.slice(0, 4);
-    const month: string = baseDate.slice(4, 6);
-    const day: string = baseDate.slice(6, 8);
-
-    return { value: `${year}-${month}-${day}`, isAllDay: true };
-  }
-
-  if (isTzidDate) {
-    const timezone: string = iCalDate.split(':')[0];
-    const baseDate: string = iCalDate.split(':')[1];
-
-    return {
-      value: getBaseDate(baseDate),
-      timezone: timezone.slice(timezone.indexOf('TZID=') + 'TZID='.length),
-    };
-  }
-
-  return { value: getBaseDate(iCalDate) };
-};
-/**
- * Format to ISO date
- * @param date
- */
-const getBaseDate = (date: string): string => {
-  const baseDate: string = date;
-
-  const year: string = baseDate.slice(0, 4);
-  const month: string = baseDate.slice(4, 6);
-  const day: string = baseDate.slice(6, 8);
-  const hour: string = baseDate.slice(9, 11);
-  const minute: string = baseDate.slice(11, 13);
-
-  return `${year}-${month}-${day}T${hour}:${minute}:00Z`;
 };
 
 /**
@@ -362,10 +233,13 @@ const getBaseDate = (date: string): string => {
  * @param iCalStringEvent
  */
 const toJSON = (iCalStringEvent: string): ICalJSON => {
-  // Get vcalendar props
-  const vCalendarString: string = getVCalendarProps(iCalStringEvent);
+  // Validate string
+  validateICalString(iCalStringEvent);
 
-  const calendar: any = formatVCalendarStringToObject(vCalendarString);
+  // Get vcalendar props
+  const vCalendarString: string = getVCalendarString(iCalStringEvent);
+
+  const calendar: CalendarJSON = formatVCalendarStringToObject(vCalendarString);
 
   // Get events
   let vEventsString: string = iCalStringEvent.slice(
@@ -381,7 +255,7 @@ const toJSON = (iCalStringEvent: string): ICalJSON => {
 
   // Parse each event to obj
   const events: EventJSON[] = vEventsArray.map((stringEvent: string) =>
-    parseEventFromString(stringEvent)
+    getOneEventJSON(stringEvent)
   );
 
   return {

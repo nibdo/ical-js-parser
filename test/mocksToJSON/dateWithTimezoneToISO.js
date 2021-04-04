@@ -1,5 +1,4 @@
-const dateWithTimezoneToISO = `
-BEGIN:VCALENDAR
+const dateWithTimezoneToISO = `BEGIN:VCALENDAR
 METHOD:REQUEST
 PRODID:Test
 VERSION:2.0
@@ -17,7 +16,6 @@ STATUS:CONFIRMED
 SEQUENCE:0
 LOCATION;LANGUAGE=en-US:
 END:VEVENT
-END:VCALENDAR
-`;
+END:VCALENDAR`;
 
 module.exports = dateWithTimezoneToISO;

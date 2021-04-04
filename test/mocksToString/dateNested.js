@@ -7,6 +7,7 @@ const dateNested = {
   },
   events: [
     {
+      begin: 'VEVENT',
       description: 'ada',
       uid:
         '040000008200E00074C5B7101A82E00800000000DF9560970228D701000000000000000',
@@ -25,7 +26,13 @@ const dateNested = {
       transp: 'OPAQUE',
       status: 'CONFIRMED',
       sequence: '0',
-      location: '',
+      location:
+        'basdjij ifjisaj ifjisjf ijiasj fisjifjsiajfijasi jfas jsai' +
+        ' fjiasj fioajsij foiasj fijasi jfiasj ifjasi jfais jfija ijfi' +
+        ' ajsifji asj fi jasij fiajf ijaij sij jf ajoif jajsifj a jsij' +
+        ' fiajs ifjas jfiojas fjas jfjas ijf i jsifj iasjfijas ijfi ajsif' +
+        ' jiasj fijas fja fjioasj ojasfj',
+      end: 'VEVENT',
     },
   ],
 };

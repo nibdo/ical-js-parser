@@ -2,7 +2,7 @@ const chai = require('chai');
 const assert = chai.assert;
 
 const mocks = require('./mocksToJSON');
-const ICalParser = require('../dist/index');
+const ICalParser = require('../dist');
 
 describe('Parse to JSON from string', function () {
   it(
@@ -11,7 +11,6 @@ describe('Parse to JSON from string', function () {
     function () {
       const parsedEvent = ICalParser.default.toJSON(mocks.nestedPropsSummary);
 
-      console.log(parsedEvent);
       const { summary, location, description } = parsedEvent.events[0];
       assert.equal(summary, 'cv');
       assert.equal(location, '');
@@ -45,6 +44,22 @@ describe('Parse to JSON from string', function () {
     assert.equal(dtend, '2021-04-01T11:30:00Z');
   });
 
+  it('should merge uid from two lines simple date with Z', function () {
+    const parsedEvent = ICalParser.default.toJSON(mocks.simpleDateWithZ);
+
+    const { uid, description } = parsedEvent.events[0];
+
+    assert.equal(
+      uid,
+      '040000008200E00174C5B7301A82E0080000000089FCDD3B6C29D7010000000000000000100000000843E9436BC801248C955E340249C503'
+    );
+    assert.equal(
+      description,
+      'adadasd174C5B7301A82E0080000000089FCDD3B6C29D701000000000000000 samasiioasfioasjfio ja asfmioasiof asjio fjasifj ioasjf ioasji jfsaijfio j mcXXXXXXx',
+      'should format description with space'
+    );
+  });
+
   it('should format simple date without Z', function () {
     const parsedEvent = ICalParser.default.toJSON(mocks.simpleDateWithoutZ);
 
@@ -54,6 +69,45 @@ describe('Parse to JSON from string', function () {
     assert.typeOf(dtend, 'string');
     assert.equal(dtstart, '2021-04-01T11:00:00Z');
     assert.equal(dtend, '2021-04-01T11:30:00Z');
+  });
+
+  it('should format simple date without time', function () {
+    const parsedEvent = ICalParser.default.toJSON(mocks.simpleDateWithoutTime);
+
+    const { dtstart, dtend } = parsedEvent.events[0];
+
+    assert.property(dtstart, 'isAllDay');
+    assert.equal(dtstart.value, '2021-04-09');
+    assert.property(dtend, 'isAllDay');
+    assert.equal(dtend.value, '2021-04-09');
+  });
+
+  it('should throw error with wrong date with time', function () {
+    assert.throws(
+      () => ICalParser.default.toJSON(mocks.wrongDateWithTime),
+      'Date is not valid'
+    );
+  });
+
+  it('should throw error with wrong date without time', function () {
+    assert.throws(
+      () => ICalParser.default.toJSON(mocks.wrongDateWithoutTime),
+      'Date is not valid'
+    );
+  });
+
+  it('should throw error with wrong calendar format', function () {
+    assert.throws(
+      () => ICalParser.default.toJSON(mocks.wrongFormatCalendar),
+      'Wrong format'
+    );
+  });
+
+  it('should throw error with wrong event format', function () {
+    assert.throws(
+      () => ICalParser.default.toJSON(mocks.wrongFormatEvent),
+      'Wrong format'
+    );
   });
 
   it('should format one attendee to JSON', function () {

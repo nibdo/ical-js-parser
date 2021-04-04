@@ -7,6 +7,7 @@ const attendees = {
   },
   events: [
     {
+      begin: 'VEVENT',
       lastModified: '2021-03-30T19:32:00Z',
       dtstamp: '2021-03-30T19:32:00Z',
       uid: 'CaqugAe----1165932647582@test.com',
@@ -31,6 +32,7 @@ const attendees = {
       dtstart: '2021-04-01T10:00:00Z',
       dtend: '2021-04-01T10:30:00Z',
       sequence: '1',
+      end: 'VEVENT',
     },
   ],
 };

@@ -1,17 +1,11 @@
-import { ICalJSON } from '../types';
-import {
-  ATTENDEE_KEY,
-  checkIfIsDateKey,
-  DATE_ONLY_LENGTH,
-  MAX_LINE_LENGTH,
-  ORGANIZER_KEY,
-} from '../common';
 import { DateTime } from 'luxon';
+
+import { ICalJSON } from '../types';
+import { checkIfIsDateKey, DATE_ONLY_LENGTH, MAX_LINE_LENGTH } from '../common';
+import { ATTENDEE_KEY, ORGANIZER_KEY } from '../constants';
 
 const CALENDAR_BEGIN: string = 'BEGIN:VCALENDAR\n';
 const CALENDAR_END: string = 'END:VCALENDAR';
-const EVENT_BEGIN: string = 'BEGIN:VEVENT\n';
-const EVENT_END: string = 'END:VEVENT\n';
 
 const foldLine = (row: string): string => {
   let result: string = '';
@@ -178,9 +172,6 @@ const toString = (iCalObj: ICalJSON): string => {
 
   // Loop over all events
   for (const event of events) {
-    // Add event
-    result = addKeyValue(result, 'BEGIN:', 'VEVENT');
-
     // Build event string from object props
     for (const [key, value] of Object.entries(event)) {
       const keyString: string = key;
@@ -243,12 +234,9 @@ const toString = (iCalObj: ICalJSON): string => {
           foldLine(`${transformToICalKey(key)}${delimiter}${valueAny}`) + '\n';
       }
     }
-    result = addKeyValue(result, 'END:', 'VEVENT');
   }
 
   result += CALENDAR_END;
-
-  // Fold lines over limit
 
   return result;
 };
