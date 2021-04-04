@@ -11,6 +11,7 @@ describe('Parse to JSON from string', function () {
     function () {
       const parsedEvent = ICalParser.default.toJSON(mocks.nestedPropsSummary);
 
+      console.log(parsedEvent);
       const { summary, location, description } = parsedEvent.events[0];
       assert.equal(summary, 'cv');
       assert.equal(location, '');

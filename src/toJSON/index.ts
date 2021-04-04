@@ -1,5 +1,5 @@
-import { ATTENDEE_KEY, checkIfIsDateKey } from './common';
-import { EventJSON, ICalJSON, KeyValue } from './types';
+import { ATTENDEE_KEY, checkIfIsDateKey } from '../common';
+import { CalendarJSON, EventJSON, ICalJSON, KeyValue } from '../types';
 
 const EVENT_BEGIN_KEY_VALUE = 'BEGIN:VEVENT';
 const CALENDAR_END_KEY_VALUE = 'END:VCALENDAR';
@@ -38,8 +38,34 @@ const splitStringEvents = (iCalEvents: string) => {
   return result;
 };
 
+/**
+ * Extract only calendar string part
+ * @param iCalString
+ */
 const getVCalendarProps = (iCalString: string): string => {
   return iCalString.slice(0, iCalString.indexOf(EVENT_BEGIN_KEY_VALUE));
+};
+
+/**
+ * Parse calendar string to calendar JSON
+ * @param calendarString
+ */
+const formatVCalendarStringToObject = (
+  calendarString: string
+): CalendarJSON => {
+  const calendarRows: string[] = mergeRowsToArray(calendarString);
+
+  const result: any = {};
+
+  for (const row of calendarRows) {
+    const keyValue: KeyValue = splitToKeyValueObj(row);
+
+    const { key, value } = keyValue;
+
+    result[key] = value;
+  }
+
+  return result;
 };
 
 /**
@@ -71,7 +97,7 @@ const parseEventFromString = (rawString: string): EventJSON => {
   const eventObj: any = {};
 
   // Format event string, merge multiline values
-  const eventWithMergedRows: string[] = mergeRows(rawString);
+  const eventWithMergedRows: string[] = mergeRowsToArray(rawString);
 
   for (const stringEvent of eventWithMergedRows) {
     const keyValue: KeyValue = splitToKeyValueObj(stringEvent);
@@ -123,7 +149,7 @@ const formatString = (value: any): string => {
  * Merge rows for same key
  * @param stringEvent
  */
-const mergeRows = (stringEvent: string): string[] => {
+const mergeRowsToArray = (stringEvent: string): string[] => {
   // Split key values for every new line
   const rowsArray: string[] = stringEvent.split('\n');
 
@@ -339,6 +365,8 @@ const toJSON = (iCalStringEvent: string): ICalJSON => {
   // Get vcalendar props
   const vCalendarString: string = getVCalendarProps(iCalStringEvent);
 
+  const calendar: any = formatVCalendarStringToObject(vCalendarString);
+
   // Get events
   let vEventsString: string = iCalStringEvent.slice(
     vCalendarString.length,
@@ -357,12 +385,7 @@ const toJSON = (iCalStringEvent: string): ICalJSON => {
   );
 
   return {
-    calendar: {
-      begin: 'VCALENDAR',
-      prodid: 'abc',
-      version: '1',
-      end: 'VCALENDAR',
-    },
+    calendar,
     events,
   };
 };

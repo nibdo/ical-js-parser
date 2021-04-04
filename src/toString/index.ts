@@ -1,11 +1,11 @@
-import { ICalJSON } from './types';
+import { ICalJSON } from '../types';
 import {
   ATTENDEE_KEY,
   checkIfIsDateKey,
   DATE_ONLY_LENGTH,
   MAX_LINE_LENGTH,
   ORGANIZER_KEY,
-} from './common';
+} from '../common';
 import { DateTime } from 'luxon';
 
 const CALENDAR_BEGIN: string = 'BEGIN:VCALENDAR\n';

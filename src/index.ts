@@ -1,5 +1,5 @@
-import toJSON from './toJSON';
 import toString from './toString';
+import toJSON from './toJSON';
 
 export interface ICalParser {
   toJSON: Function;
