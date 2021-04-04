@@ -33,11 +33,9 @@ export const validateICalString = (iCalString: string): void => {
     throw new Error(WRONG_FORMAT_ERROR);
   }
 
-  const lines: string[] = iCalString.split('\n');
-
   if (
-    lines[0] !== CALENDAR_BEGIN_KEY_VALUE ||
-    lines[lines.length - 1] !== CALENDAR_END_KEY_VALUE
+    iCalString.indexOf(CALENDAR_BEGIN_KEY_VALUE) === -1 ||
+    iCalString.indexOf(CALENDAR_END_KEY_VALUE) === -1
   ) {
     throw new Error(WRONG_FORMAT_ERROR);
   }

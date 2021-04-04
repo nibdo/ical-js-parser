@@ -1,4 +1,5 @@
-const simpleDateWithoutZ = `BEGIN:VCALENDAR
+const simpleDateWithoutZ = `
+BEGIN:VCALENDAR
 METHOD:REQUEST
 PRODID:Test
 VERSION:2.0
