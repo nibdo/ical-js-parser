@@ -3,6 +3,7 @@ import {
   validateStringDateWithoutTime,
 } from './validator';
 import { timezoneParser } from './timezoneParser';
+import { DateTime } from 'luxon';
 
 /**
  * Format to ISO date
@@ -23,7 +24,9 @@ export const formatToIsoDate = (date: string): string => {
 
   return result;
 };
-
+export const removeTString = (date: string): string => {
+  return date.replace('T', '');
+};
 /**
  * Better formatting for dates
  * @param iCalDate
@@ -53,15 +56,25 @@ export const parseICalDate = (iCalDate: string): any => {
     return { value: dateString, isAllDay: true };
   }
 
+  // Need to format tzid date value to UTC
   if (isTzidDate) {
     const timezone: string = iCalDate.split(':')[0];
-    const baseDate: string = iCalDate.split(':')[1];
+    const baseDate: string = removeTString(iCalDate.split(':')[1]);
+
+    const timezoneParsed: string = timezoneParser(
+      timezone.slice(timezone.indexOf('TZID=') + 'TZID='.length)
+    );
+
+    const zuluDate: DateTime = DateTime.fromFormat(baseDate, 'yyyyLLddHHmmss', {
+      zone: timezoneParsed,
+    });
+
+    // Cut milliseconds
+    const zuluDateFinal: string = zuluDate.toUTC().toISO().slice(0, 19) + 'Z';
 
     return {
-      value: formatToIsoDate(baseDate),
-      timezone: timezoneParser(
-        timezone.slice(timezone.indexOf('TZID=') + 'TZID='.length)
-      ),
+      value: zuluDateFinal,
+      timezone: timezoneParsed,
     };
   }
 

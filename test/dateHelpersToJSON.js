@@ -52,7 +52,7 @@ describe('Date helpers toJSON', function () {
     it('should format date with timezone', function () {
       const result = parseICalDate(validDateWithTimezone);
 
-      assert.equal(result.value, '2021-04-02T03:00:00Z');
+      assert.equal(result.value, '2021-04-02T01:00:00Z');
       assert.equal(result.timezone, 'Europe/Berlin');
     });
   });

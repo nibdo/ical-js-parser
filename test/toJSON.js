@@ -27,9 +27,9 @@ describe('Parse to JSON from string', function () {
     assert.property(dtstart, 'timezone');
     assert.property(dtend, 'value');
     assert.property(dtend, 'timezone');
-    assert.equal(dtstart.value, '2021-04-02T03:00:00Z');
+    assert.equal(dtstart.value, '2021-04-02T01:00:00Z');
     assert.equal(dtstart.timezone, 'Europe/Berlin');
-    assert.equal(dtend.value, '2021-04-02T03:30:00Z');
+    assert.equal(dtend.value, '2021-04-02T01:30:00Z');
     assert.equal(dtend.timezone, 'Europe/Berlin');
   });
 
@@ -69,9 +69,9 @@ describe('Parse to JSON from string', function () {
     assert.property(dtstart, 'timezone');
     assert.property(dtend, 'value');
     assert.property(dtend, 'timezone');
-    assert.equal(dtstart.value, '2021-05-10T15:00:00Z');
+    assert.equal(dtstart.value, '2021-05-10T13:00:00Z');
     assert.equal(dtstart.timezone, 'CET');
-    assert.equal(dtend.value, '2021-05-10T15:40:00Z');
+    assert.equal(dtend.value, '2021-05-10T13:40:00Z');
     assert.equal(dtend.timezone, 'CET');
   });
 
