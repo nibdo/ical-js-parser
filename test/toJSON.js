@@ -60,6 +60,21 @@ describe('Parse to JSON from string', function () {
     );
   });
 
+  it('should format date with timezone in long CET format to short CET format', function () {
+    const parsedEvent = ICalParser.default.toJSON(mocks.tzidDateCETWrongFormat);
+
+    const { dtstart, dtend } = parsedEvent.events[0];
+
+    assert.property(dtstart, 'value');
+    assert.property(dtstart, 'timezone');
+    assert.property(dtend, 'value');
+    assert.property(dtend, 'timezone');
+    assert.equal(dtstart.value, '2021-05-10T15:00:00Z');
+    assert.equal(dtstart.timezone, 'CET');
+    assert.equal(dtend.value, '2021-05-10T15:40:00Z');
+    assert.equal(dtend.timezone, 'CET');
+  });
+
   it('should format simple date without Z', function () {
     const parsedEvent = ICalParser.default.toJSON(mocks.simpleDateWithoutZ);
 

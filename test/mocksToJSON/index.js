@@ -9,6 +9,7 @@ const oneAttendee = require('./oneAttendee');
 const twoAttendees = require('./twoAttendees');
 const wrongFormatCalendar = require('./wrongFormatCalendar');
 const wrongFormatEvent = require('./wrongFormatEvent');
+const tzidDateCETWrongFormat = require('./tzidDateCETWrongFormat');
 
 module.exports = {
   nestedPropsSummary,
@@ -20,6 +21,7 @@ module.exports = {
   wrongDateWithTime,
   oneAttendee,
   twoAttendees,
+  tzidDateCETWrongFormat,
   wrongFormatCalendar,
   wrongFormatEvent,
 };

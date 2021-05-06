@@ -2,6 +2,7 @@ import {
   validateISOStringDate,
   validateStringDateWithoutTime,
 } from './validator';
+import { timezoneParser } from './timezoneParser';
 
 /**
  * Format to ISO date
@@ -58,7 +59,9 @@ export const parseICalDate = (iCalDate: string): any => {
 
     return {
       value: formatToIsoDate(baseDate),
-      timezone: timezone.slice(timezone.indexOf('TZID=') + 'TZID='.length),
+      timezone: timezoneParser(
+        timezone.slice(timezone.indexOf('TZID=') + 'TZID='.length)
+      ),
     };
   }
 
