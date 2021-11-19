@@ -40,9 +40,9 @@ export interface EventJSON {
   summary?: string;
   transp?: string;
   rrule?: string;
-  unknown?: string;
   status?: string;
   recurrenceId?: { TZID: string };
+  [key: string]: any;
 }
 
 export interface ICalJSON {
