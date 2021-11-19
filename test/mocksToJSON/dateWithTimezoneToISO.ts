@@ -1,4 +1,4 @@
-const nestedPropsSummary = `BEGIN:VCALENDAR
+export const dateWithTimezoneToISO = `BEGIN:VCALENDAR
 METHOD:REQUEST
 PRODID:Test
 VERSION:2.0
@@ -17,5 +17,3 @@ SEQUENCE:0
 LOCATION;LANGUAGE=en-US:
 END:VEVENT
 END:VCALENDAR`;
-
-module.exports = nestedPropsSummary;

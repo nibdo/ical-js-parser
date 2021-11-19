@@ -1,4 +1,6 @@
-const attendees = {
+import { ICalJSON } from '../../dist/types';
+
+export const attendeesTestData: ICalJSON = {
   calendar: {
     begin: 'VCALENDAR',
     prodid: 'abc',
@@ -36,5 +38,3 @@ const attendees = {
     },
   ],
 };
-
-module.exports = attendees;

@@ -1,4 +1,4 @@
-const oneAttendee = `BEGIN:VCALENDAR
+export const oneAttendee = `BEGIN:VCALENDAR
 PRODID:Calendar V1.1
 VERSION:2.0
 METHOD:REPLY
@@ -15,5 +15,3 @@ DTEND:20210401T103000Z
 SEQUENCE:1
 END:VEVENT
 END:VCALENDAR`;
-
-module.exports = oneAttendee;

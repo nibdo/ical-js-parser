@@ -1,4 +1,4 @@
-const dateNested = {
+export const dateNestedTestData = {
   calendar: {
     begin: 'VCALENDAR',
     prodid: 'abc',
@@ -9,8 +9,7 @@ const dateNested = {
     {
       begin: 'VEVENT',
       description: 'ada',
-      uid:
-        '040000008200E00074C5B7101A82E00800000000DF9560970228D701000000000000000',
+      uid: '040000008200E00074C5B7101A82E00800000000DF9560970228D701000000000000000',
       summary: 'cv',
       dtstart: {
         value: '2021-03-29T07:00:00.668Z',
@@ -36,5 +35,3 @@ const dateNested = {
     },
   ],
 };
-
-module.exports = dateNested;
