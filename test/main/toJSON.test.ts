@@ -1,4 +1,4 @@
-import ICalParser from '../../src';
+import ICalParser from '../../src/index';
 import mocks from '../mocksToJSON';
 import { ERROR_MSG } from '../../src/enums';
 
@@ -42,8 +42,8 @@ describe('Parse to JSON from string', function () {
 
     const { dtstart, dtend } = parsedEvent.events[0];
 
-    assert.equal(dtstart, '20210401T110000Z');
-    assert.equal(dtend, '20210401T113000Z');
+    assert.equal(dtstart.value, '20210401T110000Z');
+    assert.equal(dtend.value, '20210401T113000Z');
   });
 
   it('should merge uid from two lines simple date with Z', function () {
@@ -78,8 +78,8 @@ describe('Parse to JSON from string', function () {
 
     const { dtstart, dtend } = parsedEvent.events[0];
 
-    assert.equal(dtstart, '20210401T110000Z');
-    assert.equal(dtend, '20210401T113000Z');
+    assert.equal(dtstart.value, '20210401T110000Z');
+    assert.equal(dtend.value, '20210401T113000Z');
   });
 
   it('should format simple date without time', function () {

@@ -4,6 +4,7 @@ import {
 } from './validator';
 import { timezoneParser } from './timezoneParser';
 import { DateTime } from 'luxon';
+import { DateTimeObject } from '../types';
 
 /**
  * Format to ISO date
@@ -31,14 +32,14 @@ export const removeTString = (date: string): string => {
  * Better formatting for dates
  * @param iCalDate
  */
-export const parseICalDate = (iCalDate: string): any => {
+export const parseICalDate = (iCalDate: string): DateTimeObject => {
   // No special handling for other dates
   const isTzidDate: boolean = iCalDate.indexOf('TZID') !== -1;
   const isAllDayEvent: boolean = iCalDate.indexOf('DATE:') !== -1;
   const isSimpleDate: boolean = !isTzidDate && !isAllDayEvent;
 
   if (isSimpleDate) {
-    return formatToIsoDate(iCalDate);
+    return { value: formatToIsoDate(iCalDate) };
   }
 
   if (isAllDayEvent) {

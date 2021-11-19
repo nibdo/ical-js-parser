@@ -1,5 +1,11 @@
 import { checkIfIsDateKey } from '../common';
-import { CalendarJSON, EventJSON, ICalJSON, KeyValue } from '../types';
+import {
+  CalendarJSON,
+  DateTimeObject,
+  EventJSON,
+  ICalJSON,
+  KeyValue,
+} from '../types';
 import { parseICalDate } from './dateHelpers';
 import {
   ALWAYS_STRING_VALUES,
@@ -161,7 +167,7 @@ const splitRowToKeyValueObj = (item: string): KeyValue => {
   }
 
   if (isDateKey) {
-    value = normalizeString(parseICalDate(value));
+    value = parseICalDate(value) as DateTimeObject;
   }
 
   // UID cant have any space between chars
@@ -247,7 +253,8 @@ const toJSON = (iCalStringEvent: string): ICalJSON => {
     iCalStringEvent.length - CALENDAR_END_KEY_VALUE.length
   );
 
-  // Remove valarms //TODO add in future?
+  // Remove valarms
+  // TODO add support for valarms
   vEventsString = removeVAlarm(vEventsString);
 
   // Split string events to array

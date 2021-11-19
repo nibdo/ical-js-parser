@@ -1,4 +1,4 @@
-import ICalParser from '../../src';
+import ICalParser from '../../src/index';
 
 const assert = require('assert');
 

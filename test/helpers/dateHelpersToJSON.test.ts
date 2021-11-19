@@ -38,7 +38,7 @@ describe('Date helpers toJSON', function () {
     it('should format date with time', function () {
       const result = parseICalDate(validDateWithTime);
 
-      assert.equal(result, '20210402T030000Z');
+      assert.equal(result.value, '20210402T030000Z');
     });
     it('should format date without time', function () {
       const result = parseICalDate(validDateWithoutTime);

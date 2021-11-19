@@ -1,6 +1,7 @@
 export interface DateTimeObject {
   value: string;
   timezone?: string;
+  isAllDay?: boolean;
 }
 
 export interface KeyValue {
