@@ -12,6 +12,7 @@ export interface KeyValue {
 export interface Organizer {
   mailto: string;
   CN?: string;
+  EMAIL?: string;
 }
 
 export interface Attendee {
