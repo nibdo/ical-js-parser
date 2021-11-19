@@ -1,10 +1,17 @@
 const chai = require('chai');
 const assert = chai.assert;
 
-const mocks = require('./mocksToJSON');
-const ICalParser = require('../dist');
+const mocks = require('../mocksToJSON');
+const ICalParser = require('../../dist');
 
 describe('Parse to JSON from string', function () {
+  it('should throw error for wrong format', function () {
+    try {
+      ICalParser.default.toJSON('<html>facxzcasdv</html>');
+    } catch (e) {
+      assert.equal(e.message, 'Wrong format');
+    }
+  });
   it(
     'should return only string value for nested props Summary,' +
       ' Location and Description',
@@ -27,9 +34,9 @@ describe('Parse to JSON from string', function () {
     assert.property(dtstart, 'timezone');
     assert.property(dtend, 'value');
     assert.property(dtend, 'timezone');
-    assert.equal(dtstart.value, '2021-04-02T01:00:00Z');
+    assert.equal(dtstart.value, '20210402T010000Z');
     assert.equal(dtstart.timezone, 'Europe/Berlin');
-    assert.equal(dtend.value, '2021-04-02T01:30:00Z');
+    assert.equal(dtend.value, '20210402T013000Z');
     assert.equal(dtend.timezone, 'Europe/Berlin');
   });
 
@@ -40,8 +47,8 @@ describe('Parse to JSON from string', function () {
 
     assert.typeOf(dtstart, 'string');
     assert.typeOf(dtend, 'string');
-    assert.equal(dtstart, '2021-04-01T11:00:00Z');
-    assert.equal(dtend, '2021-04-01T11:30:00Z');
+    assert.equal(dtstart, '20210401T110000Z');
+    assert.equal(dtend, '20210401T113000Z');
   });
 
   it('should merge uid from two lines simple date with Z', function () {
@@ -69,9 +76,9 @@ describe('Parse to JSON from string', function () {
     assert.property(dtstart, 'timezone');
     assert.property(dtend, 'value');
     assert.property(dtend, 'timezone');
-    assert.equal(dtstart.value, '2021-05-10T13:00:00Z');
+    assert.equal(dtstart.value, '20210510T130000Z');
     assert.equal(dtstart.timezone, 'CET');
-    assert.equal(dtend.value, '2021-05-10T13:40:00Z');
+    assert.equal(dtend.value, '20210510T134000Z');
     assert.equal(dtend.timezone, 'CET');
   });
 
@@ -82,8 +89,8 @@ describe('Parse to JSON from string', function () {
 
     assert.typeOf(dtstart, 'string');
     assert.typeOf(dtend, 'string');
-    assert.equal(dtstart, '2021-04-01T11:00:00Z');
-    assert.equal(dtend, '2021-04-01T11:30:00Z');
+    assert.equal(dtstart, '20210401T110000Z');
+    assert.equal(dtend, '20210401T113000Z');
   });
 
   it('should format simple date without time', function () {
@@ -92,9 +99,9 @@ describe('Parse to JSON from string', function () {
     const { dtstart, dtend } = parsedEvent.events[0];
 
     assert.property(dtstart, 'isAllDay');
-    assert.equal(dtstart.value, '2021-04-09');
+    assert.equal(dtstart.value, '20210409');
     assert.property(dtend, 'isAllDay');
-    assert.equal(dtend.value, '2021-04-09');
+    assert.equal(dtend.value, '20210409');
   });
 
   it('should throw error with wrong date with time', function () {

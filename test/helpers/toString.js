@@ -1,8 +1,8 @@
 const chai = require('chai');
 const assert = chai.assert;
 
-const mocks = require('./mocksToString');
-const ICalParser = require('../dist/index');
+const mocks = require('../mocksToString');
+const ICalParser = require('../../dist');
 
 describe('Parse to String from JSON', function () {
   it('should return string iCal event with date with timezone', function () {

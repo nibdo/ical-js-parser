@@ -6,7 +6,7 @@ const {
   normalizeString,
   normalizeKey,
   splitRowsToArray,
-} = require('../dist/toJSON/formatHelpers');
+} = require('../../dist/toJSON/formatHelpers');
 
 describe('Format helpers toJSON', function () {
   describe('extractAlwaysStringValue', function () {

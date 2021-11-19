@@ -1,11 +1,11 @@
 const chai = require('chai');
 const assert = chai.assert;
 
-const { INVALID_DATE_ERROR } = require('../dist/constants');
+const { INVALID_DATE_ERROR } = require('../../dist/constants');
 const {
   parseICalDate,
   formatToIsoDate,
-} = require('../dist/toJSON/dateHelpers');
+} = require('../../dist/toJSON/dateHelpers');
 
 const validDateWithTime = '20210402T030000';
 const invalidDateWithTime = '20210402T930000';
@@ -18,7 +18,7 @@ describe('Date helpers toJSON', function () {
     it('should format date to ISO date', function () {
       const result = formatToIsoDate(validDateWithTime);
 
-      assert.equal(result, '2021-04-02T03:00:00Z');
+      assert.equal(result, '20210402T030000Z');
     });
 
     it('should throw error with wrong date', function () {
@@ -36,12 +36,12 @@ describe('Date helpers toJSON', function () {
     it('should format date with time', function () {
       const result = parseICalDate(validDateWithTime);
 
-      assert.equal(result, '2021-04-02T03:00:00Z');
+      assert.equal(result, '20210402T030000Z');
     });
     it('should format date without time', function () {
       const result = parseICalDate(validDateWithoutTime);
 
-      assert.equal(result.value, '2021-04-02');
+      assert.equal(result.value, '20210402');
     });
     it('should throw error for invalid date without time', function () {
       assert.throws(
@@ -52,7 +52,7 @@ describe('Date helpers toJSON', function () {
     it('should format date with timezone', function () {
       const result = parseICalDate(validDateWithTimezone);
 
-      assert.equal(result.value, '2021-04-02T01:00:00Z');
+      assert.equal(result.value, '20210402T010000Z');
       assert.equal(result.timezone, 'Europe/Berlin');
     });
   });

@@ -1,12 +1,12 @@
 {
   "name": "ical-js-parser",
-  "version": "0.0.6",
+  "version": "0.0.8",
   "author": "nibdo",
   "license": "MIT",
   "private": false,
   "declaration": true,
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "index.js",
+  "types": "index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/nibdo/ical-js-parser.git"
@@ -27,7 +27,7 @@
     "eslint-plugin-prettier": "^3.3.1"
   },
   "scripts": {
-    "test": "mocha",
+    "test": "mocha test/*/*.js",
     "start": "tsc && node dist/index.js",
     "build": "npm run compile && npm run copy",
     "compile": "tsc",

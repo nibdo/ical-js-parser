@@ -1,7 +1,7 @@
 const chai = require('chai');
 const assert = chai.assert;
 
-const { timezoneParser } = require('../dist/toJSON/timezoneParser');
+const { timezoneParser } = require('../../dist/toJSON/timezoneParser');
 
 describe('Timezone parser toJSON', function () {
   it('should format long CET to short CET format', function () {

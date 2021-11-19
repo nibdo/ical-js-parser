@@ -16,7 +16,7 @@ export const validateISOStringDate = (stringDate: string): void => {
 };
 
 export const validateStringDateWithoutTime = (stringDate: string): void => {
-  if (!DateTime.fromFormat(stringDate, 'yyyy-MM-dd').isValid) {
+  if (!DateTime.fromFormat(stringDate, 'yyyyMMdd').isValid) {
     throw new Error(INVALID_DATE_ERROR);
   }
 };
