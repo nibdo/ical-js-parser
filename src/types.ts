@@ -1,6 +1,7 @@
 export interface DateTimeObject {
   value: string;
   timezone?: string;
+  isAllDay?: boolean;
 }
 
 export interface KeyValue {
@@ -8,24 +9,42 @@ export interface KeyValue {
   value: any;
 }
 
+export interface Organizer {
+  mailto: string;
+  CN?: string;
+  EMAIL?: string;
+}
+
+export interface Attendee {
+  CUTYPE?: string;
+  ROLE: string;
+  EMAIL?: string;
+  PARTSTAT?: string;
+  CN?: string;
+  mailto: string;
+  XNUMGUESTS?: string;
+}
+
 export interface EventJSON {
   begin: string;
   end: string;
-  dtstart: any;
-  dtend: any;
-  dtstamp?: string;
-  organizer?: any;
+  dtstart: DateTimeObject;
+  dtend: DateTimeObject;
+  dtstamp?: DateTimeObject;
+  organizer?: Organizer;
   uid?: string;
-  attendee?: any;
-  created?: string;
+  attendee?: Attendee[];
+  created?: DateTimeObject;
   description?: string;
-  lastModified?: string;
+  lastModified?: DateTimeObject;
   location?: string;
   sequence?: string;
   summary?: string;
   transp?: string;
   rrule?: string;
-  unknown?: string;
+  status?: string;
+  recurrenceId?: { TZID: string };
+  [key: string]: any;
 }
 
 export interface ICalJSON {

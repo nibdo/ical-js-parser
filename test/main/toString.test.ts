@@ -1,15 +1,16 @@
-const chai = require('chai');
-const assert = chai.assert;
+import ICalParser from '../../src/index';
 
-const mocks = require('./mocksToString');
-const ICalParser = require('../dist/index');
+const assert = require('assert');
+
+import mocks from '../mocksToString';
 
 describe('Parse to String from JSON', function () {
   it('should return string iCal event with date with timezone', function () {
-    const parsedEvent = ICalParser.default.toString(mocks.dateNested);
+    const parsedEvent = ICalParser.toString(mocks.dateNestedTestData);
 
     const lines = parsedEvent.split('\n');
 
+    console.log('lines');
     assert.equal(lines[0], 'BEGIN:VCALENDAR');
     assert.equal(lines[1], 'PRODID:abc');
     assert.equal(lines[2], 'VERSION:1');
@@ -25,26 +26,28 @@ describe('Parse to String from JSON', function () {
     assert.equal(lines[9], 'CLASS:PUBLIC');
     assert.equal(lines[10], 'PRIORITY:5');
     assert.equal(lines[11], 'DTSTAMP:20210402T205600Z');
-    assert.equal(lines[12], 'TRANSP:OPAQUE');
-    assert.equal(lines[13], 'STATUS:CONFIRMED');
-    assert.equal(lines[14], 'SEQUENCE:0');
+    assert.equal(lines[12], 'LAST-MODIFIED:20210402T205600Z');
+    assert.equal(lines[13], 'CREATED:20210402T205600Z');
+    assert.equal(lines[14], 'TRANSP:OPAQUE');
+    assert.equal(lines[15], 'STATUS:CONFIRMED');
+    assert.equal(lines[16], 'SEQUENCE:0');
     assert.equal(
-      lines[15],
+      lines[17],
       'LOCATION:basdjij ifjisaj ifjisjf ijiasj fisjifjsiajfijasi jfas jsai fjiasj '
     );
     assert.equal(
-      lines[16],
+      lines[18],
       ' fioajsij foiasj fijasi jfiasj ifjasi jfais jfija ijfi ajsifji asj fi jasij '
     );
     assert.equal(
-      lines[17],
+      lines[19],
       ' i jsifj iasjfijas ijfi ajsif jiasj fijas fja fjioasj ojasfj'
     );
-    assert.equal(lines[18], 'END:VEVENT');
-    assert.equal(lines[19], 'END:VCALENDAR');
+    assert.equal(lines[20], 'END:VEVENT');
+    assert.equal(lines[21], 'END:VCALENDAR');
   });
   it('should return string iCal event with attendees', function () {
-    const parsedEvent = ICalParser.default.toString(mocks.attendees);
+    const parsedEvent = ICalParser.toString(mocks.attendeesTestData);
 
     const lines = parsedEvent.split('\n');
 

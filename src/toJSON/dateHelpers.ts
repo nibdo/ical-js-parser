@@ -4,6 +4,7 @@ import {
 } from './validator';
 import { timezoneParser } from './timezoneParser';
 import { DateTime } from 'luxon';
+import { DateTimeObject } from '../types';
 
 /**
  * Format to ISO date
@@ -18,7 +19,7 @@ export const formatToIsoDate = (date: string): string => {
   const hour: string = baseDate.slice(9, 11);
   const minute: string = baseDate.slice(11, 13);
 
-  const result: string = `${year}-${month}-${day}T${hour}:${minute}:00Z`;
+  const result: string = `${year}${month}${day}T${hour}${minute}00Z`;
 
   validateISOStringDate(result);
 
@@ -31,14 +32,14 @@ export const removeTString = (date: string): string => {
  * Better formatting for dates
  * @param iCalDate
  */
-export const parseICalDate = (iCalDate: string): any => {
+export const parseICalDate = (iCalDate: string): DateTimeObject => {
   // No special handling for other dates
   const isTzidDate: boolean = iCalDate.indexOf('TZID') !== -1;
   const isAllDayEvent: boolean = iCalDate.indexOf('DATE:') !== -1;
   const isSimpleDate: boolean = !isTzidDate && !isAllDayEvent;
 
   if (isSimpleDate) {
-    return formatToIsoDate(iCalDate);
+    return { value: formatToIsoDate(iCalDate) };
   }
 
   if (isAllDayEvent) {
@@ -49,7 +50,7 @@ export const parseICalDate = (iCalDate: string): any => {
     const month: string = baseDate.slice(4, 6);
     const day: string = baseDate.slice(6, 8);
 
-    const dateString: string = `${year}-${month}-${day}`;
+    const dateString: string = `${year}${month}${day}`;
 
     validateStringDateWithoutTime(dateString);
 
@@ -65,15 +66,18 @@ export const parseICalDate = (iCalDate: string): any => {
       timezone.slice(timezone.indexOf('TZID=') + 'TZID='.length)
     );
 
-    const zuluDate: DateTime = DateTime.fromFormat(baseDate, 'yyyyLLddHHmmss', {
+    const zuluDate: string = DateTime.fromFormat(baseDate, 'yyyyLLddHHmmss', {
       zone: timezoneParsed,
-    });
-
-    // Cut milliseconds
-    const zuluDateFinal: string = zuluDate.toUTC().toISO().slice(0, 19) + 'Z';
+    })
+      .toUTC()
+      .toFormat('yyyyLLddHHmmss');
 
     return {
-      value: zuluDateFinal,
+      value:
+        zuluDate.slice(0, 'YYYYMMDD'.length) +
+        'T' +
+        zuluDate.slice('YYYYMMDD'.length) +
+        'Z',
       timezone: timezoneParsed,
     };
   }

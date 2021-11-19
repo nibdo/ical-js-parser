@@ -1,4 +1,4 @@
-# ical-js-parser [ALPHA]
+# ical-js-parser [BETA]
 
 Simple parser from iCal string
 
@@ -20,7 +20,7 @@ For complicated use cases use https://github.com/mozilla-comm/ical.js/
 
 ## Example result from iCal string
 
-Same format is used to parse from JSON to iCal string
+Note: Same format can be used to parse JSON event to iCal string
 
     {
         calendar: 
@@ -28,18 +28,40 @@ Same format is used to parse from JSON to iCal string
                 begin: 'VCALENDAR', 
                 prodid: 'abc', 
                 version: '1', 
-                end: 'VCALENDAR' 
+                end: 'VCALENDAR',
+                method: 'REPLY'
             },
         events: 
             [
                 {
                     begin: 'VEVENT',
-                    lastModified: '2021-03-30T19:32:00Z',
-                    dtstamp: '2021-03-30T19:32:00Z',
+                    lastModified: {
+                        value: '2021-03-30T19:32:00Z'
+                    }
+                    dtstamp: {
+                        value: "20210330T193200Z"
+                    },
                     uid: 'CaqugAe----1165932647582@test.com',
                     summary: 'Meeting',
-                    dtstart: '2021-04-01T10:00:00Z',
-                    dtend: '2021-04-01T10:30:00Z',
+                    dtstart: {
+                        value: "20210401T100000Z"
+                    },
+                    dtend: {
+                        value: "20210401T103000Z"
+                    },
+                    organizer: {
+                        EMAIL: "buia@test.com",
+                        mailto: "buia@test.com"
+                    },
+                    attendee: [
+                        {
+                            PARTSTAT: "ACCEPTED",
+                            CUTYPE: "INDIVIDUAL",
+                            ROLE: "REQ-PARTICIPANT",
+                            EMAIL: "bata123@test2.org",
+                            mailto: "bata123@test2.org"
+                        }
+                    ],
                     sequence: '1',
                     end: 'VEVENT',
                 }
@@ -48,7 +70,5 @@ Same format is used to parse from JSON to iCal string
 
 
 ## TODO
-
-- more tests
 - alarms
 - calendar timezones

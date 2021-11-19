@@ -1,4 +1,6 @@
-const dateNested = {
+import { ICalJSON } from '../../src/types';
+
+export const dateNestedTestData: ICalJSON = {
   calendar: {
     begin: 'VCALENDAR',
     prodid: 'abc',
@@ -9,8 +11,7 @@ const dateNested = {
     {
       begin: 'VEVENT',
       description: 'ada',
-      uid:
-        '040000008200E00074C5B7101A82E00800000000DF9560970228D701000000000000000',
+      uid: '040000008200E00074C5B7101A82E00800000000DF9560970228D701000000000000000',
       summary: 'cv',
       dtstart: {
         value: '2021-03-29T07:00:00.668Z',
@@ -22,7 +23,9 @@ const dateNested = {
       },
       class: 'PUBLIC',
       priority: '5',
-      dtstamp: '2021-04-02T20:56:00Z',
+      dtstamp: { value: '2021-04-02T20:56:00Z' },
+      lastModified: { value: '2021-04-02T20:56:00Z' },
+      created: { value: '2021-04-02T20:56:00Z' },
       transp: 'OPAQUE',
       status: 'CONFIRMED',
       sequence: '0',
@@ -36,5 +39,3 @@ const dateNested = {
     },
   ],
 };
-
-module.exports = dateNested;
