@@ -32,17 +32,17 @@ export interface EventJSON {
   organizer?: Organizer;
   uid?: string;
   attendee?: Attendee[];
-  created?: string;
+  created?: DateTimeObject;
   description?: string;
-  lastModified?: string;
+  lastModified?: DateTimeObject;
   location?: string;
   sequence?: string;
   summary?: string;
   transp?: string;
   rrule?: string;
-  unknown?: string;
   status?: string;
   recurrenceId?: { TZID: string };
+  [key: string]: any;
 }
 
 export interface ICalJSON {

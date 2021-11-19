@@ -129,7 +129,6 @@ describe('Parse to JSON from string', function () {
     const parsedEvent = ICalParser.toJSON(mocks.oneAttendee);
 
     const { organizer, attendee } = parsedEvent.events[0];
-
     const firstAttendee = attendee?.[0];
 
     assert.equal(organizer?.mailto, 'buia@test.com');
