@@ -18,6 +18,7 @@ export interface Organizer {
 export interface Attendee {
   CUTYPE?: string;
   ROLE: string;
+  EMAIL?: string;
   PARTSTAT?: string;
   CN?: string;
   mailto: string;
@@ -29,7 +30,7 @@ export interface EventJSON {
   end: string;
   dtstart: DateTimeObject;
   dtend: DateTimeObject;
-  dtstamp?: string;
+  dtstamp?: DateTimeObject;
   organizer?: Organizer;
   uid?: string;
   attendee?: Attendee[];

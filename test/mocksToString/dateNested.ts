@@ -1,4 +1,6 @@
-export const dateNestedTestData = {
+import { ICalJSON } from '../../src/types';
+
+export const dateNestedTestData: ICalJSON = {
   calendar: {
     begin: 'VCALENDAR',
     prodid: 'abc',
