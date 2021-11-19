@@ -1,24 +1,25 @@
-const chai = require('chai');
-const assert = chai.assert;
+import ICalParser from '../../src';
+import mocks from '../mocksToJSON';
+import { ERROR_MSG } from '../../src/enums';
 
-const mocks = require('../mocksToJSON');
-const ICalParser = require('../../dist');
+const assert = require('assert');
 
 describe('Parse to JSON from string', function () {
   it('should throw error for wrong format', function () {
     try {
-      ICalParser.default.toJSON('<html>facxzcasdv</html>');
-    } catch (e) {
-      assert.equal(e.message, 'Wrong format');
+      ICalParser.toJSON('<html lang="en">facxzcasdv</html>');
+    } catch (e: any) {
+      assert.equal(e.message, ERROR_MSG.WRONG_FORMAT);
     }
   });
   it(
     'should return only string value for nested props Summary,' +
       ' Location and Description',
     function () {
-      const parsedEvent = ICalParser.default.toJSON(mocks.nestedPropsSummary);
+      const parsedEvent = ICalParser.toJSON(mocks.nestedPropsSummary);
 
       const { summary, location, description } = parsedEvent.events[0];
+
       assert.equal(summary, 'cv');
       assert.equal(location, '');
       assert.equal(description, 'ada');
@@ -26,14 +27,10 @@ describe('Parse to JSON from string', function () {
   );
 
   it('should format date with timezone to ISO string date in UTC', function () {
-    const parsedEvent = ICalParser.default.toJSON(mocks.dateWithTimezoneToISO);
+    const parsedEvent = ICalParser.toJSON(mocks.dateWithTimezoneToISO);
 
     const { dtstart, dtend } = parsedEvent.events[0];
 
-    assert.property(dtstart, 'value');
-    assert.property(dtstart, 'timezone');
-    assert.property(dtend, 'value');
-    assert.property(dtend, 'timezone');
     assert.equal(dtstart.value, '20210402T010000Z');
     assert.equal(dtstart.timezone, 'Europe/Berlin');
     assert.equal(dtend.value, '20210402T013000Z');
@@ -41,18 +38,16 @@ describe('Parse to JSON from string', function () {
   });
 
   it('should format simple date with Z', function () {
-    const parsedEvent = ICalParser.default.toJSON(mocks.simpleDateWithZ);
+    const parsedEvent = ICalParser.toJSON(mocks.simpleDateWithZ);
 
     const { dtstart, dtend } = parsedEvent.events[0];
 
-    assert.typeOf(dtstart, 'string');
-    assert.typeOf(dtend, 'string');
     assert.equal(dtstart, '20210401T110000Z');
     assert.equal(dtend, '20210401T113000Z');
   });
 
   it('should merge uid from two lines simple date with Z', function () {
-    const parsedEvent = ICalParser.default.toJSON(mocks.simpleDateWithZ);
+    const parsedEvent = ICalParser.toJSON(mocks.simpleDateWithZ);
 
     const { uid, description } = parsedEvent.events[0];
 
@@ -68,14 +63,10 @@ describe('Parse to JSON from string', function () {
   });
 
   it('should format date with timezone in long CET format to short CET format', function () {
-    const parsedEvent = ICalParser.default.toJSON(mocks.tzidDateCETWrongFormat);
+    const parsedEvent = ICalParser.toJSON(mocks.tzidDateCETWrongFormat);
 
     const { dtstart, dtend } = parsedEvent.events[0];
 
-    assert.property(dtstart, 'value');
-    assert.property(dtstart, 'timezone');
-    assert.property(dtend, 'value');
-    assert.property(dtend, 'timezone');
     assert.equal(dtstart.value, '20210510T130000Z');
     assert.equal(dtstart.timezone, 'CET');
     assert.equal(dtend.value, '20210510T134000Z');
@@ -83,65 +74,66 @@ describe('Parse to JSON from string', function () {
   });
 
   it('should format simple date without Z', function () {
-    const parsedEvent = ICalParser.default.toJSON(mocks.simpleDateWithoutZ);
+    const parsedEvent = ICalParser.toJSON(mocks.simpleDateWithoutZ);
 
     const { dtstart, dtend } = parsedEvent.events[0];
 
-    assert.typeOf(dtstart, 'string');
-    assert.typeOf(dtend, 'string');
     assert.equal(dtstart, '20210401T110000Z');
     assert.equal(dtend, '20210401T113000Z');
   });
 
   it('should format simple date without time', function () {
-    const parsedEvent = ICalParser.default.toJSON(mocks.simpleDateWithoutTime);
+    const parsedEvent = ICalParser.toJSON(mocks.simpleDateWithoutTime);
 
     const { dtstart, dtend } = parsedEvent.events[0];
 
-    assert.property(dtstart, 'isAllDay');
+    assert.equal(dtend.isAllDay, true);
     assert.equal(dtstart.value, '20210409');
-    assert.property(dtend, 'isAllDay');
+    assert.equal(dtend.isAllDay, true);
     assert.equal(dtend.value, '20210409');
   });
 
   it('should throw error with wrong date with time', function () {
-    assert.throws(
-      () => ICalParser.default.toJSON(mocks.wrongDateWithTime),
-      'Date is not valid'
-    );
+    try {
+      ICalParser.toJSON(mocks.wrongDateWithTime);
+    } catch (e: any) {
+      assert.equal(e.message, ERROR_MSG.INVALID_DATE);
+    }
   });
 
   it('should throw error with wrong date without time', function () {
-    assert.throws(
-      () => ICalParser.default.toJSON(mocks.wrongDateWithoutTime),
-      'Date is not valid'
-    );
+    try {
+      ICalParser.toJSON(mocks.wrongDateWithoutTime);
+    } catch (e: any) {
+      assert.equal(e.message, ERROR_MSG.INVALID_DATE);
+    }
   });
 
   it('should throw error with wrong calendar format', function () {
-    assert.throws(
-      () => ICalParser.default.toJSON(mocks.wrongFormatCalendar),
-      'Wrong format'
-    );
+    try {
+      ICalParser.toJSON(mocks.wrongFormatCalendar);
+    } catch (e: any) {
+      assert.equal(e.message, ERROR_MSG.WRONG_FORMAT);
+    }
   });
 
   it('should throw error with wrong event format', function () {
-    assert.throws(
-      () => ICalParser.default.toJSON(mocks.wrongFormatEvent),
-      'Wrong format'
-    );
+    try {
+      ICalParser.toJSON(mocks.wrongFormatEvent);
+    } catch (e: any) {
+      assert.equal(e.message, ERROR_MSG.WRONG_FORMAT);
+    }
   });
 
   it('should format one attendee to JSON', function () {
-    const parsedEvent = ICalParser.default.toJSON(mocks.oneAttendee);
+    const parsedEvent = ICalParser.toJSON(mocks.oneAttendee);
 
     const { organizer, attendee } = parsedEvent.events[0];
 
     const firstAttendee = attendee[0];
 
-    assert.property(organizer, 'mailto');
     assert.equal(organizer.mailto, 'buia@test.com');
-    assert.lengthOf(attendee, 1);
+    assert.equal(attendee.length, 1);
     assert.equal(firstAttendee.mailto, 'bata123@test2.org');
     assert.equal(firstAttendee.PARTSTAT, 'ACCEPTED');
     assert.equal(firstAttendee.CUTYPE, 'INDIVIDUAL');
@@ -149,15 +141,15 @@ describe('Parse to JSON from string', function () {
   });
 
   it('should format two attendees to JSON', function () {
-    const parsedEvent = ICalParser.default.toJSON(mocks.twoAttendees);
+    const parsedEvent = ICalParser.toJSON(mocks.twoAttendees);
 
     const { organizer, attendee } = parsedEvent.events[0];
 
     const firstAttendee = attendee[0];
     const secondAttendee = attendee[1];
 
-    assert.property(organizer, 'mailto');
-    assert.lengthOf(attendee, 2);
+    assert.equal(attendee.length, 2);
+    assert.equal(organizer.mailto, 'buia@test.com');
     assert.equal(firstAttendee.mailto, 'bata123@test2.org');
     assert.equal(firstAttendee.PARTSTAT, 'ACCEPTED');
     assert.equal(firstAttendee.CUTYPE, 'INDIVIDUAL');

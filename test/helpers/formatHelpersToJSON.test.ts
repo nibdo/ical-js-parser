@@ -1,12 +1,11 @@
-const chai = require('chai');
-const assert = chai.assert;
-
-const {
+import {
   extractAlwaysStringValue,
-  normalizeString,
   normalizeKey,
+  normalizeString,
   splitRowsToArray,
-} = require('../../dist/toJSON/formatHelpers');
+} from '../../src/toJSON/formatHelpers';
+
+const assert = require('assert');
 
 describe('Format helpers toJSON', function () {
   describe('extractAlwaysStringValue', function () {
@@ -67,8 +66,7 @@ describe('Format helpers toJSON', function () {
 PRODID:Calendar V1.1`
       );
 
-      assert.typeOf(result, 'array');
-      assert.lengthOf(result, 2);
+      assert.equal(result.length, 2);
       assert.equal(result[0], 'BEGIN:VCALENDAR');
       assert.equal(result[1], 'PRODID:Calendar V1.1');
     });
@@ -78,8 +76,7 @@ PRODID:Calendar V1.1`
  text is ending here`
       );
 
-      assert.typeOf(result, 'array');
-      assert.lengthOf(result, 1);
+      assert.equal(result.length, 1);
       assert.equal(result[0], 'SUMMARY:This is some text, text is ending here');
     });
   });

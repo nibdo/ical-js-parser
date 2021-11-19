@@ -1,12 +1,12 @@
-const chai = require('chai');
-const assert = chai.assert;
+import ICalParser from '../../src';
 
-const mocks = require('../mocksToString');
-const ICalParser = require('../../dist');
+const assert = require('assert');
+
+import mocks from '../mocksToString';
 
 describe('Parse to String from JSON', function () {
   it('should return string iCal event with date with timezone', function () {
-    const parsedEvent = ICalParser.default.toString(mocks.dateNested);
+    const parsedEvent = ICalParser.toString(mocks.dateNestedTestData);
 
     const lines = parsedEvent.split('\n');
 
@@ -44,7 +44,7 @@ describe('Parse to String from JSON', function () {
     assert.equal(lines[19], 'END:VCALENDAR');
   });
   it('should return string iCal event with attendees', function () {
-    const parsedEvent = ICalParser.default.toString(mocks.attendees);
+    const parsedEvent = ICalParser.toString(mocks.attendeesTestData);
 
     const lines = parsedEvent.split('\n');
 

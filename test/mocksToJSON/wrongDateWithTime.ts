@@ -1,4 +1,4 @@
-const wrongDateWithTime = `BEGIN:VCALENDAR
+export const wrongDateWithTime = `BEGIN:VCALENDAR
 METHOD:REQUEST
 PRODID:Test
 VERSION:2.0
@@ -20,5 +20,3 @@ SEQUENCE:0
 LOCATION:asdsfdf
 END:VEVENT
 END:VCALENDAR`;
-
-module.exports = wrongDateWithTime;

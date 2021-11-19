@@ -1,11 +1,8 @@
-const chai = require('chai');
-const assert = chai.assert;
+import { INVALID_DATE_ERROR } from '../../src/constants';
+import { formatToIsoDate, parseICalDate } from '../../src/toJSON/dateHelpers';
+import { ERROR_MSG } from '../../src/enums';
 
-const { INVALID_DATE_ERROR } = require('../../dist/constants');
-const {
-  parseICalDate,
-  formatToIsoDate,
-} = require('../../dist/toJSON/dateHelpers');
+const assert = require('assert');
 
 const validDateWithTime = '20210402T030000';
 const invalidDateWithTime = '20210402T930000';
@@ -22,14 +19,19 @@ describe('Date helpers toJSON', function () {
     });
 
     it('should throw error with wrong date', function () {
-      assert.throws(
-        () => formatToIsoDate(invalidDateWithTime),
-        INVALID_DATE_ERROR
-      );
+      try {
+        formatToIsoDate(invalidDateWithTime);
+      } catch (e: any) {
+        assert.equal(e.message, ERROR_MSG.INVALID_DATE);
+      }
     });
 
     it('should throw error with text string', function () {
-      assert.throws(() => formatToIsoDate('some string'), INVALID_DATE_ERROR);
+      try {
+        formatToIsoDate('some string');
+      } catch (e: any) {
+        assert.equal(e.message, ERROR_MSG.INVALID_DATE);
+      }
     });
   });
   describe('parseICalDate', function () {
@@ -44,10 +46,11 @@ describe('Date helpers toJSON', function () {
       assert.equal(result.value, '20210402');
     });
     it('should throw error for invalid date without time', function () {
-      assert.throws(
-        () => parseICalDate(invalidDateWithoutTime),
-        INVALID_DATE_ERROR
-      );
+      try {
+        parseICalDate(invalidDateWithoutTime);
+      } catch (e: any) {
+        assert.equal(e.message, ERROR_MSG.INVALID_DATE);
+      }
     });
     it('should format date with timezone', function () {
       const result = parseICalDate(validDateWithTimezone);

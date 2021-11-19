@@ -19,7 +19,7 @@ export const extractAlwaysStringValue = (value: any): string => {
  * Normalize string, remove any formats, line breakes
  * @param value
  */
-export const normalizeString = (value: any): string => {
+export const normalizeString = (value: any): string | any => {
   if (!value || (typeof value === 'string' && value.length < 1)) {
     return '';
   }

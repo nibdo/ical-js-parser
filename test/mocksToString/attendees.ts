@@ -1,4 +1,4 @@
-const attendees = {
+export const attendeesTestData = {
   calendar: {
     begin: 'VCALENDAR',
     prodid: 'abc',
@@ -36,5 +36,3 @@ const attendees = {
     },
   ],
 };
-
-module.exports = attendees;
