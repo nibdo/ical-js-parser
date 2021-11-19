@@ -130,14 +130,14 @@ describe('Parse to JSON from string', function () {
 
     const { organizer, attendee } = parsedEvent.events[0];
 
-    const firstAttendee = attendee[0];
+    const firstAttendee = attendee?.[0];
 
-    assert.equal(organizer.mailto, 'buia@test.com');
-    assert.equal(attendee.length, 1);
-    assert.equal(firstAttendee.mailto, 'bata123@test2.org');
-    assert.equal(firstAttendee.PARTSTAT, 'ACCEPTED');
-    assert.equal(firstAttendee.CUTYPE, 'INDIVIDUAL');
-    assert.equal(firstAttendee.ROLE, 'REQ-PARTICIPANT');
+    assert.equal(organizer?.mailto, 'buia@test.com');
+    assert.equal(attendee?.length, 1);
+    assert.equal(firstAttendee?.mailto, 'bata123@test2.org');
+    assert.equal(firstAttendee?.PARTSTAT, 'ACCEPTED');
+    assert.equal(firstAttendee?.CUTYPE, 'INDIVIDUAL');
+    assert.equal(firstAttendee?.ROLE, 'REQ-PARTICIPANT');
   });
 
   it('should format two attendees to JSON', function () {
@@ -145,18 +145,18 @@ describe('Parse to JSON from string', function () {
 
     const { organizer, attendee } = parsedEvent.events[0];
 
-    const firstAttendee = attendee[0];
-    const secondAttendee = attendee[1];
+    const firstAttendee = attendee?.[0];
+    const secondAttendee = attendee?.[1];
 
-    assert.equal(attendee.length, 2);
-    assert.equal(organizer.mailto, 'buia@test.com');
-    assert.equal(firstAttendee.mailto, 'bata123@test2.org');
-    assert.equal(firstAttendee.PARTSTAT, 'ACCEPTED');
-    assert.equal(firstAttendee.CUTYPE, 'INDIVIDUAL');
-    assert.equal(firstAttendee.ROLE, 'REQ-PARTICIPANT');
-    assert.equal(secondAttendee.mailto, 'abada@test2.org');
-    assert.equal(secondAttendee.PARTSTAT, 'DECLINED');
-    assert.equal(secondAttendee.CUTYPE, 'INDIVIDUAL');
-    assert.equal(secondAttendee.ROLE, 'REQ-PARTICIPANT');
+    assert.equal(attendee?.length, 2);
+    assert.equal(organizer?.mailto, 'buia@test.com');
+    assert.equal(firstAttendee?.mailto, 'bata123@test2.org');
+    assert.equal(firstAttendee?.PARTSTAT, 'ACCEPTED');
+    assert.equal(firstAttendee?.CUTYPE, 'INDIVIDUAL');
+    assert.equal(firstAttendee?.ROLE, 'REQ-PARTICIPANT');
+    assert.equal(secondAttendee?.mailto, 'abada@test2.org');
+    assert.equal(secondAttendee?.PARTSTAT, 'DECLINED');
+    assert.equal(secondAttendee?.CUTYPE, 'INDIVIDUAL');
+    assert.equal(secondAttendee?.ROLE, 'REQ-PARTICIPANT');
   });
 });

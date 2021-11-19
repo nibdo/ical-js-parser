@@ -9,15 +9,29 @@ export interface KeyValue {
   value: any;
 }
 
+export interface Organizer {
+  mailto: string;
+  CN?: string;
+}
+
+export interface Attendee {
+  CUTYPE?: string;
+  ROLE: string;
+  PARTSTAT?: string;
+  CN?: string;
+  mailto: string;
+  XNUMGUESTS?: string;
+}
+
 export interface EventJSON {
   begin: string;
   end: string;
-  dtstart: any;
-  dtend: any;
+  dtstart: DateTimeObject;
+  dtend: DateTimeObject;
   dtstamp?: string;
-  organizer?: any;
+  organizer?: Organizer;
   uid?: string;
-  attendee?: any;
+  attendee?: Attendee[];
   created?: string;
   description?: string;
   lastModified?: string;
@@ -27,6 +41,8 @@ export interface EventJSON {
   transp?: string;
   rrule?: string;
   unknown?: string;
+  status?: string;
+  recurrenceId?: { TZID: string };
 }
 
 export interface ICalJSON {
