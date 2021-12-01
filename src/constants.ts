@@ -3,7 +3,7 @@ export const EVENT_END_KEY_VALUE = 'END:VEVENT';
 export const CALENDAR_BEGIN_KEY_VALUE = 'BEGIN:VCALENDAR';
 export const CALENDAR_END_KEY_VALUE = 'END:VCALENDAR';
 
-export const VALARM_RECURSION_MAX_COUNT = 50;
+export const VALARM_RECURSION_MAX_COUNT = 5000;
 
 export const ALWAYS_STRING_VALUES: string[] = [
   'summary',
