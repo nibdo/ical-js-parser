@@ -94,10 +94,10 @@ const removeVAlarm = (
       eventStringResult.slice(0, indexOfBeginVAlarm) +
       eventStringResult.slice(indexOfEndVAlarm + 'END:VALARM'.length);
 
-    removeVAlarm(eventStringResult, count - 1);
+    return removeVAlarm(eventStringResult, count - 1);
+  } else {
+    return eventStringResult;
   }
-
-  return eventStringResult;
 };
 
 const getOneEventJSON = (rawString: string): EventJSON => {
@@ -255,10 +255,10 @@ const toJSON = (iCalStringEvent: string): ICalJSON => {
 
   // Remove valarms
   // TODO add support for valarms
-  vEventsString = removeVAlarm(vEventsString);
+  const stringWithoutAlarms = removeVAlarm(vEventsString);
 
   // Split string events to array
-  const vEventsArray: string[] = splitStringEvents(vEventsString);
+  const vEventsArray: string[] = splitStringEvents(stringWithoutAlarms);
 
   // Parse each event to obj
   const events: EventJSON[] = vEventsArray.map((stringEvent: string) =>
