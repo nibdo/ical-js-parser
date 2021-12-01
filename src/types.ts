@@ -43,7 +43,7 @@ export interface EventJSON {
   transp?: string;
   rrule?: string;
   status?: string;
-  recurrenceId?: { TZID: string };
+  recurrenceId?: { TZID: string } | string;
   [key: string]: any;
 }
 
