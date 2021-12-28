@@ -158,4 +158,14 @@ describe('Parse to JSON from string', function () {
     assert.equal(secondAttendee?.CUTYPE, 'INDIVIDUAL');
     assert.equal(secondAttendee?.ROLE, 'REQ-PARTICIPANT');
   });
+
+  it('should remove not supported properties', function () {
+    const parsedEvent = ICalParser.toJSON(mocks.notSupportedProperties);
+
+    const { dtstart, dtend, rrule } = parsedEvent.events[0];
+
+    assert.equal(dtstart.value, '20211227T150000Z');
+    assert.equal(dtend.value, '20211227T160000Z');
+    assert.equal(rrule, undefined);
+  });
 });

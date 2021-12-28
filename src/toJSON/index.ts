@@ -80,21 +80,22 @@ const splitStringEvents = (iCalEvents: string) => {
  * @param vEventsString
  * @param count
  */
-const removeVAlarm = (
+const removeProperty = (
   vEventsString: string,
+  property: string,
   count: number = VALARM_RECURSION_MAX_COUNT
 ): string => {
   let eventStringResult: string = vEventsString;
 
-  const indexOfBeginVAlarm: number = eventStringResult.indexOf('BEGIN:VALARM');
-  const indexOfEndVAlarm: number = eventStringResult.indexOf('END:VALARM');
+  const indexOfBeginVAlarm: number = eventStringResult.indexOf(`BEGIN:${property}`);
+  const indexOfEndVAlarm: number = eventStringResult.indexOf(`END:${property}`);
 
   if (indexOfBeginVAlarm !== -1 && count > 0) {
     eventStringResult =
       eventStringResult.slice(0, indexOfBeginVAlarm) +
-      eventStringResult.slice(indexOfEndVAlarm + 'END:VALARM'.length);
+      eventStringResult.slice(indexOfEndVAlarm + `END:${property}`.length);
 
-    return removeVAlarm(eventStringResult, count - 1);
+    return removeProperty(eventStringResult, property, count - 1);
   } else {
     return eventStringResult;
   }
@@ -253,12 +254,15 @@ const toJSON = (iCalStringEvent: string): ICalJSON => {
     iCalStringEvent.length - CALENDAR_END_KEY_VALUE.length
   );
 
-  // Remove valarms
+  // Remove valarms and other properties
   // TODO add support for valarms
-  const stringWithoutAlarms = removeVAlarm(vEventsString);
+  let stringCleaned = removeProperty(vEventsString, 'VALARM');
+  stringCleaned = removeProperty(stringCleaned, 'DAYLIGHT');
+  stringCleaned = removeProperty(stringCleaned, 'VTIMEZONE');
+  stringCleaned = removeProperty(stringCleaned, 'STANDARD');
 
   // Split string events to array
-  const vEventsArray: string[] = splitStringEvents(stringWithoutAlarms);
+  const vEventsArray: string[] = splitStringEvents(stringCleaned);
 
   // Parse each event to obj
   const events: EventJSON[] = vEventsArray.map((stringEvent: string) =>
