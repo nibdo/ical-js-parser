@@ -5,7 +5,7 @@ import {
   EventJSON,
   ICalJSON,
   KeyValue,
-} from '../types';
+} from '../index';
 import { parseICalDate } from './dateHelpers';
 import {
   ALWAYS_STRING_VALUES,

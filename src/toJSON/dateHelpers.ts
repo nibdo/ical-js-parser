@@ -4,7 +4,7 @@ import {
 } from './validator';
 import { timezoneParser } from './timezoneParser';
 import { DateTime } from 'luxon';
-import { DateTimeObject } from '../types';
+import {DateTimeObject} from "../index";
 
 /**
  * Format to ISO date

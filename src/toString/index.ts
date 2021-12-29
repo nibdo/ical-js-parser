@@ -1,8 +1,8 @@
 import { DateTime } from 'luxon';
 
-import { ICalJSON } from '../types';
 import { checkIfIsDateKey, DATE_ONLY_LENGTH, MAX_LINE_LENGTH } from '../common';
 import { ATTENDEE_KEY, ORGANIZER_KEY } from '../constants';
+import {ICalJSON} from "../index";
 
 const CALENDAR_BEGIN: string = 'BEGIN:VCALENDAR\n';
 const CALENDAR_END: string = 'END:VCALENDAR';
