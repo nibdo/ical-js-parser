@@ -1,6 +1,5 @@
-import { INVALID_DATE_ERROR } from '../../src/constants';
-import { formatToIsoDate, parseICalDate } from '../../src/toJSON/dateHelpers';
-import { ERROR_MSG } from '../../src/enums';
+import { formatToIsoDate, parseICalDate } from '../../toJSON/dateHelpers';
+import { ERROR_MSG } from '../../enums';
 
 const assert = require('assert');
 

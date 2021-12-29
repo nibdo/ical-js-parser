@@ -3,7 +3,7 @@ import {
   normalizeKey,
   normalizeString,
   splitRowsToArray,
-} from '../../src/toJSON/formatHelpers';
+} from '../../toJSON/formatHelpers';
 
 const assert = require('assert');
 

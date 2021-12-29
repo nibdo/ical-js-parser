@@ -1,6 +1,6 @@
-import ICalParser from '../../src/index';
+import ICalParser from '../../index';
 import mocks from '../mocksToJSON';
-import { ERROR_MSG } from '../../src/enums';
+import { ERROR_MSG } from '../../enums';
 
 const assert = require('assert');
 

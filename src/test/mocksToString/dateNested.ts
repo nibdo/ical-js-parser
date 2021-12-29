@@ -1,4 +1,4 @@
-import { ICalJSON } from '../../src/types';
+import {ICalJSON} from "../../index";
 
 export const dateNestedTestData: ICalJSON = {
   calendar: {
