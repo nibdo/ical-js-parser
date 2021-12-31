@@ -17,7 +17,6 @@ import {
   RRULE_ICAL_KEY,
   RRULE_KEY,
   UID_KEY,
-  VALARM_RECURSION_MAX_COUNT,
 } from '../constants';
 import {
   extractAlwaysStringValue,
@@ -26,6 +25,7 @@ import {
   splitRowsToArray,
 } from './formatHelpers';
 import { validateICalString } from './validator';
+import { extractProperty, removeProperty, splitDataSetsByKey } from './utils';
 
 /**
  * Extract only calendar string part
@@ -75,37 +75,11 @@ const splitStringEvents = (iCalEvents: string) => {
   return result;
 };
 
-/**
- * Temporary solution to remove valarms in recursion
- * @param vEventsString
- * @param count
- */
-const removeProperty = (
-  vEventsString: string,
-  property: string,
-  count: number = VALARM_RECURSION_MAX_COUNT
-): string => {
-  let eventStringResult: string = vEventsString;
-
-  const indexOfBeginVAlarm: number = eventStringResult.indexOf(`BEGIN:${property}`);
-  const indexOfEndVAlarm: number = eventStringResult.indexOf(`END:${property}`);
-
-  if (indexOfBeginVAlarm !== -1 && count > 0) {
-    eventStringResult =
-      eventStringResult.slice(0, indexOfBeginVAlarm) +
-      eventStringResult.slice(indexOfEndVAlarm + `END:${property}`.length);
-
-    return removeProperty(eventStringResult, property, count - 1);
-  } else {
-    return eventStringResult;
-  }
-};
-
-const getOneEventJSON = (rawString: string): EventJSON => {
-  const eventObj: any = {};
-
-  // Format event string, merge multiline values
-  const eventWithMergedRows: string[] = splitRowsToArray(rawString);
+export const formatStringToKeyValueObj = (
+  stringValue: string,
+  eventObj: any
+) => {
+  const eventWithMergedRows: string[] = splitRowsToArray(stringValue);
 
   for (const stringEvent of eventWithMergedRows) {
     const keyValue: KeyValue = splitRowToKeyValueObj(stringEvent);
@@ -120,6 +94,34 @@ const getOneEventJSON = (rawString: string): EventJSON => {
     } else {
       eventObj[key] = value;
     }
+  }
+
+  return eventObj;
+};
+
+const getOneEventJSON = (rawString: string): EventJSON => {
+  const eventObj: any = {};
+
+  // extract VALARMS from string
+  const { mainProperty, extractedProperty } = extractProperty(
+    rawString,
+    'VALARM'
+  );
+  const alarmsString = extractedProperty;
+
+  // Format event string, merge multiline values
+  formatStringToKeyValueObj(mainProperty, eventObj);
+
+  // format alarms
+  if (alarmsString && alarmsString.length > 0) {
+    eventObj.alarms = [];
+    const alarmStrings: string[] = splitDataSetsByKey(alarmsString, 'VALARM');
+
+    alarmStrings.forEach((item) => {
+      const alarmObj: any = {};
+      formatStringToKeyValueObj(item, alarmObj);
+      eventObj.alarms.push(alarmObj);
+    });
   }
 
   return eventObj;
@@ -254,10 +256,8 @@ const toJSON = (iCalStringEvent: string): ICalJSON => {
     iCalStringEvent.length - CALENDAR_END_KEY_VALUE.length
   );
 
-  // Remove valarms and other properties
-  // TODO add support for valarms
-  let stringCleaned = removeProperty(vEventsString, 'VALARM');
-  stringCleaned = removeProperty(stringCleaned, 'DAYLIGHT');
+  // Remove not supported properties
+  let stringCleaned = removeProperty(vEventsString, 'DAYLIGHT');
   stringCleaned = removeProperty(stringCleaned, 'VTIMEZONE');
   stringCleaned = removeProperty(stringCleaned, 'STANDARD');
 

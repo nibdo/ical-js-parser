@@ -64,11 +64,16 @@ Note: Same format can be used to parse JSON event to iCal string
                     ],
                     sequence: '1',
                     end: 'VEVENT',
+                    alarms: [
+                                {
+                                trigger: '-PT20M',
+                                action: 'DISPLAY',
+                                }
+                    ]
                 }
             ]
     }
 
 
 ## TODO
-- alarms
 - calendar timezones

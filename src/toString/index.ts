@@ -1,13 +1,14 @@
 import { DateTime } from 'luxon';
 
 import { checkIfIsDateKey, DATE_ONLY_LENGTH, MAX_LINE_LENGTH } from '../common';
-import { ATTENDEE_KEY, ORGANIZER_KEY } from '../constants';
-import {ICalJSON} from "../index";
+import { ALARMS_KEY, ATTENDEE_KEY, ORGANIZER_KEY } from '../constants';
+import { ICalJSON } from '../index';
+import { formatAlarmsToString } from './utils';
 
 const CALENDAR_BEGIN: string = 'BEGIN:VCALENDAR\n';
 const CALENDAR_END: string = 'END:VCALENDAR';
 
-const foldLine = (row: string): string => {
+export const foldLine = (row: string): string => {
   let result: string = '';
   const foldCount: number = row.length / MAX_LINE_LENGTH;
 
@@ -183,6 +184,7 @@ const toString = (iCalObj: ICalJSON): string => {
       const isDateKey: boolean = checkIfIsDateKey(key);
       const isAttendeeKey: boolean = key === ATTENDEE_KEY;
       const isOrganizerKey: boolean = key === ORGANIZER_KEY;
+      const isAlarmsKey: boolean = key === ALARMS_KEY;
 
       // Different rules for dates
       if (isDateKey) {
@@ -229,6 +231,8 @@ const toString = (iCalObj: ICalJSON): string => {
         }
       } else if (isOrganizerKey) {
         result += foldLine('ORGANIZER;' + mapObjToString(valueAny)) + '\n';
+      } else if (isAlarmsKey) {
+        result += formatAlarmsToString(valueAny);
       } else {
         result +=
           foldLine(`${transformToICalKey(key)}${delimiter}${valueAny}`) + '\n';

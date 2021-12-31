@@ -19,6 +19,7 @@ export const RRULE_ICAL_KEY: string = 'RRULE';
 
 export const ATTENDEE_KEY: string = 'attendee';
 export const ORGANIZER_KEY: string = 'organizer';
+export const ALARMS_KEY: string = 'alarms';
 
 export const UID_KEY: string = 'uid';
 
