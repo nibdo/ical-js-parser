@@ -10,7 +10,6 @@ describe('Parse to String from JSON', function () {
 
     const lines = parsedEvent.split('\n');
 
-    console.log('lines');
     assert.equal(lines[0], 'BEGIN:VCALENDAR');
     assert.equal(lines[1], 'PRODID:abc');
     assert.equal(lines[2], 'VERSION:1');

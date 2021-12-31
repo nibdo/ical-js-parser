@@ -33,6 +33,12 @@ export interface Attendee {
   XNUMGUESTS?: string;
 }
 
+export interface Alarm {
+  trigger: string;
+  action?: string;
+  [key: string]: any;
+}
+
 export interface EventJSON {
   begin: string;
   end: string;
@@ -52,6 +58,7 @@ export interface EventJSON {
   rrule?: string;
   status?: string;
   recurrenceId?: { TZID: string } | string;
+  alarms?: Alarm[];
   [key: string]: any;
 }
 
@@ -68,7 +75,6 @@ export interface CalendarJSON {
   version: string;
   end: string;
 }
-
 
 const ICalParser: ICalParser = {
   toJSON,
