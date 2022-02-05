@@ -31,7 +31,13 @@ Note: Same format can be used to parse JSON event to iCal string
                 end: 'VCALENDAR',
                 method: 'REPLY'
             },
-        todos: [],
+        todos: [
+            {
+                begin: 'VTODO',
+                summary: 'text',
+                end: 'VTODO'
+            }
+        ],
         events: 
             [
                 {
