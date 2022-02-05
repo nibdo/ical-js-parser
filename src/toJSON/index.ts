@@ -5,6 +5,7 @@ import {
   EventJSON,
   ICalJSON,
   KeyValue,
+  TodoJSON,
 } from '../index';
 import { parseICalDate } from './dateHelpers';
 import {
@@ -16,6 +17,7 @@ import {
   MAILTO_KEY_WITH_DELIMITER,
   RRULE_ICAL_KEY,
   RRULE_KEY,
+  TODO_BEGIN_KEY_VALUE,
   UID_KEY,
 } from '../constants';
 import {
@@ -60,17 +62,21 @@ const formatVCalendarStringToObject = (
 /**
  * Split string events to array
  * @param iCalEvents
+ * @param key
  */
-const splitStringEvents = (iCalEvents: string) => {
+const splitStringEvents = (
+  iCalEvents: string,
+  key: string = EVENT_BEGIN_KEY_VALUE
+) => {
   // Get array of events
-  let result: any = iCalEvents.split(EVENT_BEGIN_KEY_VALUE).slice(1);
+  let result: any = iCalEvents.split(key).slice(1);
 
   if (!result) {
     return '';
   }
 
   // Add missing delimiter from split to each record
-  result = result.map((item: string) => `${EVENT_BEGIN_KEY_VALUE}${item}`);
+  result = result.map((item: string) => `${key}${item}`);
 
   return result;
 };
@@ -99,7 +105,7 @@ export const formatStringToKeyValueObj = (
   return eventObj;
 };
 
-const getOneEventJSON = (rawString: string): EventJSON => {
+const getResult = (rawString: string) => {
   const eventObj: any = {};
 
   // extract VALARMS from string
@@ -125,6 +131,12 @@ const getOneEventJSON = (rawString: string): EventJSON => {
   }
 
   return eventObj;
+};
+const getOneEventJSON = (rawString: string): EventJSON => {
+  return getResult(rawString);
+};
+const getOneTodoJSON = (rawString: string): TodoJSON => {
+  return getResult(rawString);
 };
 
 /**
@@ -250,28 +262,48 @@ const toJSON = (iCalStringEvent: string): ICalJSON => {
 
   const calendar: CalendarJSON = formatVCalendarStringToObject(vCalendarString);
 
-  // Get events
-  let vEventsString: string = iCalStringEvent.slice(
+  // Get base content
+  let baseCalendarContent: string = iCalStringEvent.slice(
     vCalendarString.length,
     iCalStringEvent.length - CALENDAR_END_KEY_VALUE.length
   );
 
+  // Extract vtodos
+  const { mainProperty, extractedProperty } = extractProperty(
+    baseCalendarContent,
+    'VTODO'
+  );
+
+  const eventsString = mainProperty;
+  const todosString = extractedProperty;
+
   // Remove not supported properties
-  let stringCleaned = removeProperty(vEventsString, 'DAYLIGHT');
+  let stringCleaned = removeProperty(eventsString, 'DAYLIGHT');
   stringCleaned = removeProperty(stringCleaned, 'VTIMEZONE');
   stringCleaned = removeProperty(stringCleaned, 'STANDARD');
 
   // Split string events to array
   const vEventsArray: string[] = splitStringEvents(stringCleaned);
 
+  // Split string todos to array
+  const vTodosArray: string[] = splitStringEvents(
+    todosString,
+    TODO_BEGIN_KEY_VALUE
+  );
+
   // Parse each event to obj
   const events: EventJSON[] = vEventsArray.map((stringEvent: string) =>
     getOneEventJSON(stringEvent)
   );
 
+  const todos: TodoJSON[] = vTodosArray.map((stringTodo: string) =>
+    getOneTodoJSON(stringTodo)
+  );
+
   return {
     calendar,
     events,
+    todos,
   };
 };
 
