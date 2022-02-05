@@ -1,8 +1,8 @@
-import { VALARM_RECURSION_MAX_COUNT } from '../constants';
+import { RECURSION_MAX_COUNT } from '../constants';
 import { ExtractProperty } from '../interface';
 
 /**
- * Temporary solution to remove valarms in recursion
+ * Remove unwanted properties in recursion
  * @param vEventsString
  * @param property
  * @param count
@@ -10,19 +10,21 @@ import { ExtractProperty } from '../interface';
 export const removeProperty = (
   vEventsString: string,
   property: string,
-  count: number = VALARM_RECURSION_MAX_COUNT
+  count: number = RECURSION_MAX_COUNT
 ): string => {
   let eventStringResult: string = vEventsString;
 
-  const indexOfBeginVAlarm: number = eventStringResult.indexOf(
+  const indexOfBeginProperty: number = eventStringResult.indexOf(
     `BEGIN:${property}`
   );
-  const indexOfEndVAlarm: number = eventStringResult.indexOf(`END:${property}`);
+  const indexOfEndProperty: number = eventStringResult.indexOf(
+    `END:${property}`
+  );
 
-  if (indexOfBeginVAlarm !== -1 && count > 0) {
+  if (indexOfBeginProperty !== -1 && count > 0) {
     eventStringResult =
-      eventStringResult.slice(0, indexOfBeginVAlarm) +
-      eventStringResult.slice(indexOfEndVAlarm + `END:${property}`.length);
+      eventStringResult.slice(0, indexOfBeginProperty) +
+      eventStringResult.slice(indexOfEndProperty + `END:${property}`.length);
 
     return removeProperty(eventStringResult, property, count - 1);
   } else {
@@ -33,7 +35,7 @@ export const removeProperty = (
 export const extractProperty = (
   vEventsString: string,
   property: string,
-  count: number = VALARM_RECURSION_MAX_COUNT,
+  count: number = RECURSION_MAX_COUNT,
   result?: ExtractProperty
 ): ExtractProperty => {
   const resultValue: ExtractProperty = {
@@ -42,19 +44,21 @@ export const extractProperty = (
   };
   let eventStringResult: string = result?.mainProperty || vEventsString;
 
-  const indexOfBeginVAlarm: number = eventStringResult.indexOf(
+  const indexOfBeginProperty: number = eventStringResult.indexOf(
     `BEGIN:${property}`
   );
-  const indexOfEndVAlarm: number = eventStringResult.indexOf(`END:${property}`);
+  const indexOfEndProperty: number = eventStringResult.indexOf(
+    `END:${property}`
+  );
 
-  if (indexOfBeginVAlarm !== -1 && count > 0) {
+  if (indexOfBeginProperty !== -1 && count > 0) {
     resultValue.extractedProperty =
       resultValue?.extractedProperty +
-      eventStringResult.slice(indexOfBeginVAlarm, indexOfEndVAlarm);
+      eventStringResult.slice(indexOfBeginProperty, indexOfEndProperty);
 
     eventStringResult =
-      eventStringResult.slice(0, indexOfBeginVAlarm) +
-      eventStringResult.slice(indexOfEndVAlarm + `END:${property}`.length);
+      eventStringResult.slice(0, indexOfBeginProperty) +
+      eventStringResult.slice(indexOfEndProperty + `END:${property}`.length);
 
     resultValue.mainProperty = eventStringResult;
 

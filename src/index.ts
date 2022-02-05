@@ -62,9 +62,29 @@ export interface EventJSON {
   [key: string]: any;
 }
 
+export enum TODO_STATUS {
+  COMPLETED = 'COMPLETED',
+  NEED_ACTION = 'NEEDS-ACTION',
+}
+
+export interface TodoJSON {
+  begin?: string;
+  dtstamp?: DateTimeObject;
+  lastModified?: DateTimeObject;
+  uid?: string;
+  sequence?: string;
+  summary?: string;
+  description?: string;
+  status?: TODO_STATUS;
+  created?: DateTimeObject;
+  alarms?: Alarm[];
+  [key: string]: any;
+}
+
 export interface ICalJSON {
   calendar: CalendarJSON;
   events: EventJSON[];
+  todos: TodoJSON[];
 }
 
 export interface CalendarJSON {

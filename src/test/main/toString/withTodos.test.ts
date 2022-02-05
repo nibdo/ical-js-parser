@@ -1,0 +1,51 @@
+import ICalParser from '../../../index';
+
+const assert = require('assert');
+
+import mocks from '../../mocksToString';
+
+describe('Parse to String from JSON with todos', function () {
+  it('should return string iCal event with todo', function () {
+    const parsedEvent = ICalParser.toString(mocks.todosData);
+
+    assert.equal(
+      parsedEvent,
+      `BEGIN:VCALENDAR
+PRODID:abc
+VERSION:1
+BEGIN:VEVENT
+LAST-MODIFIED:20210330T193200Z
+DTSTAMP:20210330T193200Z
+UID:CaqugAe----1165932647582@test.com
+SUMMARY:saf
+DTSTART:20210401T100000Z
+DTEND:20210401T103000Z
+SEQUENCE:1
+END:VEVENT
+BEGIN:VEVENT
+LAST-MODIFIED:20210330T193200Z
+DTSTAMP:20210330T193200Z
+UID:CaqugAe----1165932647582@test.com
+SUMMARY:saf
+DTSTART:20210401T100000Z
+DTEND:20210401T103000Z
+SEQUENCE:1
+END:VEVENT
+BEGIN:VTODO
+LAST-MODIFIED:20210330T193200Z
+DTSTAMP:20210330T193200Z
+UID:CaqugAe----1165932647582@test.com
+SUMMARY:saf
+SEQUENCE:1
+END:VTODO
+BEGIN:VTODO
+LAST-MODIFIED:20210330T193200Z
+DTSTAMP:20210330T193200Z
+UID:CaqugAe----1165932647582@test.com
+SUMMARY:saf
+SEQUENCE:1
+END:VTODO
+END:VCALENDAR`
+    );
+  });
+});
