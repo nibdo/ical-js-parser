@@ -16,7 +16,7 @@ export const extractAlwaysStringValue = (value: any): string => {
 };
 
 /**
- * Normalize string, remove any formats, line breakes
+ * Normalize string, remove any formats, line breaks
  * @param value
  */
 export const normalizeString = (value: any): string | any => {
@@ -87,18 +87,24 @@ export const splitRowsToArray = (stringEvent: string): string[] => {
   // Multiline values starts with empty space
   const fixedRowsArray: string[] = [];
 
+  // check if prev last character was space
+  let wasSpaceBefore = false;
+
   for (const currentRow of rowsArray) {
     if (currentRow.length > 0) {
       // Join this row with previous row if starts with empty space
       if (currentRow[0] && currentRow[0] === ' ') {
+        wasSpaceBefore = true;
         // Merge previous and current row
         const mergedRows: string =
-          fixedRowsArray[fixedRowsArray.length - 1] + currentRow;
+          fixedRowsArray[fixedRowsArray.length - 1] +
+          (wasSpaceBefore ? currentRow.slice(1) : currentRow);
 
         // Replace last item with joined rows
         fixedRowsArray.pop();
         fixedRowsArray.push(mergedRows);
       } else {
+        wasSpaceBefore = false;
         // Just add row
         fixedRowsArray.push(currentRow);
       }

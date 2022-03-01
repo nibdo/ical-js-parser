@@ -2,8 +2,10 @@ export const EVENT_BEGIN_KEY_VALUE = 'BEGIN:VEVENT';
 export const EVENT_END_KEY_VALUE = 'END:VEVENT';
 export const CALENDAR_BEGIN_KEY_VALUE = 'BEGIN:VCALENDAR';
 export const CALENDAR_END_KEY_VALUE = 'END:VCALENDAR';
+export const TODO_BEGIN_KEY_VALUE = 'BEGIN:VTODO';
+export const TODO_END_KEY_VALUE = 'END:VTODO';
 
-export const VALARM_RECURSION_MAX_COUNT = 5000;
+export const RECURSION_MAX_COUNT = 5000;
 
 export const ALWAYS_STRING_VALUES: string[] = [
   'summary',
@@ -19,6 +21,7 @@ export const RRULE_ICAL_KEY: string = 'RRULE';
 
 export const ATTENDEE_KEY: string = 'attendee';
 export const ORGANIZER_KEY: string = 'organizer';
+export const ALARMS_KEY: string = 'alarms';
 
 export const UID_KEY: string = 'uid';
 

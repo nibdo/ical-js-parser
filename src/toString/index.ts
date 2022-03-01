@@ -1,13 +1,14 @@
 import { DateTime } from 'luxon';
 
-import { ICalJSON } from '../types';
 import { checkIfIsDateKey, DATE_ONLY_LENGTH, MAX_LINE_LENGTH } from '../common';
-import { ATTENDEE_KEY, ORGANIZER_KEY } from '../constants';
+import { ALARMS_KEY, ATTENDEE_KEY, ORGANIZER_KEY } from '../constants';
+import { EventJSON, ICalJSON, TodoJSON } from '../index';
+import { formatAlarmsToString } from './utils';
 
 const CALENDAR_BEGIN: string = 'BEGIN:VCALENDAR\n';
 const CALENDAR_END: string = 'END:VCALENDAR';
 
-const foldLine = (row: string): string => {
+export const foldLine = (row: string): string => {
   let result: string = '';
   const foldCount: number = row.length / MAX_LINE_LENGTH;
 
@@ -142,12 +143,80 @@ const parseDateWithTimezone = (dateObj: any): string => {
   return `TZID=${dateObj.timezone}:${formatFromUtc}`;
 };
 
+const buildString = (event: EventJSON | TodoJSON, prevResult: string) => {
+  let result: string = prevResult;
+
+  // Build event string from object props
+  for (const [key, value] of Object.entries(event)) {
+    const keyString: string = key;
+    const valueAny: any = value;
+
+    // Rules
+    const isValueArray: boolean = Array.isArray(valueAny);
+    let delimiter: string = isValueArray ? ';' : ':';
+    const isDateKey: boolean = checkIfIsDateKey(key);
+    const isAttendeeKey: boolean = key === ATTENDEE_KEY;
+    const isOrganizerKey: boolean = key === ORGANIZER_KEY;
+    const isAlarmsKey: boolean = key === ALARMS_KEY;
+
+    // Different rules for dates
+    if (isDateKey) {
+      const hasTimezone: boolean = valueAny.timezone;
+      const isSimpleObj: boolean = !hasTimezone && valueAny.value;
+      const isSimpleDate: boolean =
+        !hasTimezone && !isSimpleObj && valueAny.length === DATE_ONLY_LENGTH;
+
+      if (isSimpleDate) {
+        // Date only for all day events
+        result +=
+          foldLine(
+            `${transformToICalKey(key)}${delimiter}${parseSimpleDate(valueAny)}`
+          ) + '\n';
+      } else if (isSimpleObj) {
+        result +=
+          foldLine(
+            `${transformToICalKey(key)}${delimiter}${parseUtcDateObj(valueAny)}`
+          ) + '\n';
+      } else if (hasTimezone) {
+        delimiter = ';';
+        // Object with timezone and value
+        result +=
+          foldLine(
+            `${transformToICalKey(key)}${delimiter}${parseDateWithTimezone(
+              valueAny
+            )}`
+          ) + '\n';
+      } else {
+        result +=
+          foldLine(
+            `${transformToICalKey(key)}${delimiter}${parseUtcToTimestamp(
+              valueAny
+            )}`
+          ) + '\n';
+      }
+    } else if (isAttendeeKey) {
+      for (const item of valueAny) {
+        result += foldLine('ATTENDEE;' + mapObjToString(item)) + '\n';
+      }
+    } else if (isOrganizerKey) {
+      result += foldLine('ORGANIZER;' + mapObjToString(valueAny)) + '\n';
+    } else if (isAlarmsKey) {
+      result += formatAlarmsToString(valueAny);
+    } else {
+      result +=
+        foldLine(`${transformToICalKey(key)}${delimiter}${valueAny}`) + '\n';
+    }
+  }
+
+  return result;
+};
+
 /**
  * Build iCal string
  * @param iCalObj
  */
 const toString = (iCalObj: ICalJSON): string => {
-  const { calendar, events } = iCalObj;
+  const { calendar, events, todos } = iCalObj;
 
   const { prodid, version, calscale, method } = calendar;
 
@@ -171,68 +240,15 @@ const toString = (iCalObj: ICalJSON): string => {
   }
 
   // Loop over all events
-  for (const event of events) {
-    // Build event string from object props
-    for (const [key, value] of Object.entries(event)) {
-      const keyString: string = key;
-      const valueAny: any = value;
+  if (events && events.length > 0) {
+    for (const event of events) {
+      result = buildString(event, result);
+    }
+  }
 
-      // Rules
-      const isValueArray: boolean = Array.isArray(valueAny);
-      let delimiter: string = isValueArray ? ';' : ':';
-      const isDateKey: boolean = checkIfIsDateKey(key);
-      const isAttendeeKey: boolean = key === ATTENDEE_KEY;
-      const isOrganizerKey: boolean = key === ORGANIZER_KEY;
-
-      // Different rules for dates
-      if (isDateKey) {
-        const hasTimezone: boolean = valueAny.timezone;
-        const isSimpleObj: boolean = !hasTimezone && valueAny.value;
-        const isSimpleDate: boolean =
-          !hasTimezone && !isSimpleObj && valueAny.length === DATE_ONLY_LENGTH;
-
-        if (isSimpleDate) {
-          // Date only for all day events
-          result +=
-            foldLine(
-              `${transformToICalKey(key)}${delimiter}${parseSimpleDate(
-                valueAny
-              )}`
-            ) + '\n';
-        } else if (isSimpleObj) {
-          result +=
-            foldLine(
-              `${transformToICalKey(key)}${delimiter}${parseUtcDateObj(
-                valueAny
-              )}`
-            ) + '\n';
-        } else if (hasTimezone) {
-          delimiter = ';';
-          // Object with timezone and value
-          result +=
-            foldLine(
-              `${transformToICalKey(key)}${delimiter}${parseDateWithTimezone(
-                valueAny
-              )}`
-            ) + '\n';
-        } else {
-          result +=
-            foldLine(
-              `${transformToICalKey(key)}${delimiter}${parseUtcToTimestamp(
-                valueAny
-              )}`
-            ) + '\n';
-        }
-      } else if (isAttendeeKey) {
-        for (const item of valueAny) {
-          result += foldLine('ATTENDEE;' + mapObjToString(item)) + '\n';
-        }
-      } else if (isOrganizerKey) {
-        result += foldLine('ORGANIZER;' + mapObjToString(valueAny)) + '\n';
-      } else {
-        result +=
-          foldLine(`${transformToICalKey(key)}${delimiter}${valueAny}`) + '\n';
-      }
+  if (todos && todos.length > 0) {
+    for (const todo of todos) {
+      result = buildString(todo, result);
     }
   }
 

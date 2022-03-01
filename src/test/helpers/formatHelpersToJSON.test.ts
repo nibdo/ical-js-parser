@@ -3,7 +3,7 @@ import {
   normalizeKey,
   normalizeString,
   splitRowsToArray,
-} from '../../src/toJSON/formatHelpers';
+} from '../../toJSON/formatHelpers';
 
 const assert = require('assert');
 
@@ -72,8 +72,8 @@ PRODID:Calendar V1.1`
     });
     it('should connect rows for same key', function () {
       const result = splitRowsToArray(
-        `SUMMARY:This is some text,
- text is ending here`
+        `SUMMARY:This is some text, t
+ ext is ending here`
       );
 
       assert.equal(result.length, 1);

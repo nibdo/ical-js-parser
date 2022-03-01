@@ -10,6 +10,9 @@ import { wrongFormatCalendar } from './wrongFormatCalendar';
 import { wrongFormatEvent } from './wrongFormatEvent';
 import { twoAttendees } from './twoAttendees';
 import { simpleDateWithoutTime } from './simpleDateWithoutTime';
+import { notSupportedProperties } from './notSupportedProperties';
+import { withAlarms } from './withAlarms';
+import { withTodos } from './withTodos';
 
 export default {
   nestedPropsSummary,
@@ -24,4 +27,7 @@ export default {
   tzidDateCETWrongFormat,
   wrongFormatCalendar,
   wrongFormatEvent,
+  notSupportedProperties,
+  withAlarms,
+  withTodos,
 };

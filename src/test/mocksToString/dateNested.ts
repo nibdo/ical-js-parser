@@ -1,4 +1,6 @@
-export const dateNestedTestData = {
+import {ICalJSON} from "../../index";
+
+export const dateNestedTestData: ICalJSON = {
   calendar: {
     begin: 'VCALENDAR',
     prodid: 'abc',
@@ -21,7 +23,9 @@ export const dateNestedTestData = {
       },
       class: 'PUBLIC',
       priority: '5',
-      dtstamp: '2021-04-02T20:56:00Z',
+      dtstamp: { value: '2021-04-02T20:56:00Z' },
+      lastModified: { value: '2021-04-02T20:56:00Z' },
+      created: { value: '2021-04-02T20:56:00Z' },
       transp: 'OPAQUE',
       status: 'CONFIRMED',
       sequence: '0',

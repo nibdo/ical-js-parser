@@ -5,7 +5,8 @@ import {
   EventJSON,
   ICalJSON,
   KeyValue,
-} from '../types';
+  TodoJSON,
+} from '../index';
 import { parseICalDate } from './dateHelpers';
 import {
   ALWAYS_STRING_VALUES,
@@ -16,8 +17,8 @@ import {
   MAILTO_KEY_WITH_DELIMITER,
   RRULE_ICAL_KEY,
   RRULE_KEY,
+  TODO_BEGIN_KEY_VALUE,
   UID_KEY,
-  VALARM_RECURSION_MAX_COUNT,
 } from '../constants';
 import {
   extractAlwaysStringValue,
@@ -26,13 +27,20 @@ import {
   splitRowsToArray,
 } from './formatHelpers';
 import { validateICalString } from './validator';
+import { extractProperty, removeProperty, splitDataSetsByKey } from './utils';
 
 /**
  * Extract only calendar string part
  * @param iCalString
  */
 const getVCalendarString = (iCalString: string): string => {
-  return iCalString.slice(0, iCalString.indexOf(EVENT_BEGIN_KEY_VALUE));
+  let firstItemIndex = iCalString.indexOf(EVENT_BEGIN_KEY_VALUE);
+
+  if (firstItemIndex === -1) {
+    firstItemIndex = iCalString.indexOf(TODO_BEGIN_KEY_VALUE);
+  }
+
+  return iCalString.slice(0, firstItemIndex);
 };
 
 /**
@@ -60,51 +68,30 @@ const formatVCalendarStringToObject = (
 /**
  * Split string events to array
  * @param iCalEvents
+ * @param key
  */
-const splitStringEvents = (iCalEvents: string) => {
+const splitStringEvents = (
+  iCalEvents: string,
+  key: string = EVENT_BEGIN_KEY_VALUE
+) => {
   // Get array of events
-  let result: any = iCalEvents.split(EVENT_BEGIN_KEY_VALUE).slice(1);
+  let result: any = iCalEvents.split(key).slice(1);
 
   if (!result) {
     return '';
   }
 
   // Add missing delimiter from split to each record
-  result = result.map((item: string) => `${EVENT_BEGIN_KEY_VALUE}${item}`);
+  result = result.map((item: string) => `${key}${item}`);
 
   return result;
 };
 
-/**
- * Temporary solution to remove valarms in recursion
- * @param vEventsString
- * @param count
- */
-const removeVAlarm = (
-  vEventsString: string,
-  count: number = VALARM_RECURSION_MAX_COUNT
-): string => {
-  let eventStringResult: string = vEventsString;
-
-  const indexOfBeginVAlarm: number = eventStringResult.indexOf('BEGIN:VALARM');
-  const indexOfEndVAlarm: number = eventStringResult.indexOf('END:VALARM');
-
-  if (indexOfBeginVAlarm !== -1 && count > 0) {
-    eventStringResult =
-      eventStringResult.slice(0, indexOfBeginVAlarm) +
-      eventStringResult.slice(indexOfEndVAlarm + 'END:VALARM'.length);
-
-    return removeVAlarm(eventStringResult, count - 1);
-  } else {
-    return eventStringResult;
-  }
-};
-
-const getOneEventJSON = (rawString: string): EventJSON => {
-  const eventObj: any = {};
-
-  // Format event string, merge multiline values
-  const eventWithMergedRows: string[] = splitRowsToArray(rawString);
+export const formatStringToKeyValueObj = (
+  stringValue: string,
+  eventObj: any
+) => {
+  const eventWithMergedRows: string[] = splitRowsToArray(stringValue);
 
   for (const stringEvent of eventWithMergedRows) {
     const keyValue: KeyValue = splitRowToKeyValueObj(stringEvent);
@@ -122,6 +109,40 @@ const getOneEventJSON = (rawString: string): EventJSON => {
   }
 
   return eventObj;
+};
+
+const getResult = (rawString: string) => {
+  const eventObj: any = {};
+
+  // extract VALARMS from string
+  const { mainProperty, extractedProperty } = extractProperty(
+    rawString,
+    'VALARM'
+  );
+  const alarmsString = extractedProperty;
+
+  // Format event string, merge multiline values
+  formatStringToKeyValueObj(mainProperty, eventObj);
+
+  // format alarms
+  if (alarmsString && alarmsString.length > 0) {
+    eventObj.alarms = [];
+    const alarmStrings: string[] = splitDataSetsByKey(alarmsString, 'VALARM');
+
+    alarmStrings.forEach((item) => {
+      const alarmObj: any = {};
+      formatStringToKeyValueObj(item, alarmObj);
+      eventObj.alarms.push(alarmObj);
+    });
+  }
+
+  return eventObj;
+};
+const getOneEventJSON = (rawString: string): EventJSON => {
+  return getResult(rawString);
+};
+const getOneTodoJSON = (rawString: string): TodoJSON => {
+  return getResult(rawString);
 };
 
 /**
@@ -247,27 +268,48 @@ const toJSON = (iCalStringEvent: string): ICalJSON => {
 
   const calendar: CalendarJSON = formatVCalendarStringToObject(vCalendarString);
 
-  // Get events
-  let vEventsString: string = iCalStringEvent.slice(
+  // Get base content
+  let baseCalendarContent: string = iCalStringEvent.slice(
     vCalendarString.length,
     iCalStringEvent.length - CALENDAR_END_KEY_VALUE.length
   );
 
-  // Remove valarms
-  // TODO add support for valarms
-  const stringWithoutAlarms = removeVAlarm(vEventsString);
+  // Extract vtodos
+  const { mainProperty, extractedProperty } = extractProperty(
+    baseCalendarContent,
+    'VTODO'
+  );
+
+  const eventsString = mainProperty;
+  const todosString = extractedProperty;
+
+  // Remove not supported properties
+  let stringCleaned = removeProperty(eventsString, 'DAYLIGHT');
+  stringCleaned = removeProperty(stringCleaned, 'VTIMEZONE');
+  stringCleaned = removeProperty(stringCleaned, 'STANDARD');
 
   // Split string events to array
-  const vEventsArray: string[] = splitStringEvents(stringWithoutAlarms);
+  const vEventsArray: string[] = splitStringEvents(stringCleaned);
+
+  // Split string todos to array
+  const vTodosArray: string[] = splitStringEvents(
+    todosString,
+    TODO_BEGIN_KEY_VALUE
+  );
 
   // Parse each event to obj
   const events: EventJSON[] = vEventsArray.map((stringEvent: string) =>
     getOneEventJSON(stringEvent)
   );
 
+  const todos: TodoJSON[] = vTodosArray.map((stringTodo: string) =>
+    getOneTodoJSON(stringTodo)
+  );
+
   return {
     calendar,
     events,
+    todos,
   };
 };
 
