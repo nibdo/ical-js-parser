@@ -49,15 +49,22 @@ describe('Parse to JSON from string', function () {
   it('should merge uid from two lines simple date with Z', function () {
     const parsedEvent = ICalParser.toJSON(mocks.simpleDateWithZ);
 
-    const { uid, description } = parsedEvent.events[0];
+    const { uid } = parsedEvent.events[0];
 
     assert.equal(
       uid,
       '040000008200E00174C5B7301A82E0080000000089FCDD3B6C29D7010000000000000000100000000843E9436BC801248C955E340249C503'
     );
+  });
+
+  it('should merge overflowing description without spaces', function () {
+    const parsedEvent = ICalParser.toJSON(mocks.simpleDateWithZ);
+
+    const { description } = parsedEvent.events[0];
+
     assert.equal(
       description,
-      'adadasd174C5B7301A82E0080000000089FCDD3B6C29D701000000000000000 samasiioasfioasjfio ja asfmioasiof asjio fjasifj ioasjf ioasji jfsaijfio j mcXXXXXXx',
+      'This meeting will take place at our office. You should bring your notebook and all notes. Do not hesitate to contact us before. Transportation is provided by company',
       'should format description with space'
     );
   });

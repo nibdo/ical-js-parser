@@ -3,9 +3,9 @@ METHOD:REQUEST
 PRODID:Test
 VERSION:2.0
 BEGIN:VEVENT
-DESCRIPTION:adadasd174C5B7301A82E0080000000089FCDD3B6C29D701000000000000000
- samasiioasfioasjfio ja asfmioasiof asjio fjasifj ioasjf ioasji jfsaijfio j
- mcXXXXXXx
+DESCRIPTION:This meeting will take place at our office. You should bring yo
+ ur notebook and all notes. Do not hesitate to contact us before. Transport
+ ation is provided by company
 UID:040000008200E00174C5B7301A82E0080000000089FCDD3B6C29D701000000000000000
  0100000000843E9436BC801248C955E340249C503
 SUMMARY:tessssa
