@@ -1,4 +1,8 @@
 
+# 0.4.0
+- fix word breaking
+- vtodo
+
 # 0.3.0
 - added support for vtodo
 
