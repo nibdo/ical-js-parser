@@ -34,7 +34,13 @@ import { extractProperty, removeProperty, splitDataSetsByKey } from './utils';
  * @param iCalString
  */
 const getVCalendarString = (iCalString: string): string => {
-  return iCalString.slice(0, iCalString.indexOf(EVENT_BEGIN_KEY_VALUE));
+  let firstItemIndex = iCalString.indexOf(EVENT_BEGIN_KEY_VALUE);
+
+  if (firstItemIndex === -1) {
+    firstItemIndex = iCalString.indexOf(TODO_BEGIN_KEY_VALUE);
+  }
+
+  return iCalString.slice(0, firstItemIndex);
 };
 
 /**

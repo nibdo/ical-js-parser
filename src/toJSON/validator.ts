@@ -6,6 +6,8 @@ import {
   EVENT_BEGIN_KEY_VALUE,
   EVENT_END_KEY_VALUE,
   INVALID_DATE_ERROR,
+  TODO_BEGIN_KEY_VALUE,
+  TODO_END_KEY_VALUE,
   WRONG_FORMAT_ERROR,
 } from '../constants';
 import { ERROR_MSG } from '../enums';
@@ -28,8 +30,10 @@ export const validateStringDateWithoutTime = (stringDate: string): void => {
  */
 export const validateICalString = (iCalString: string): void => {
   if (
-    iCalString.indexOf(EVENT_BEGIN_KEY_VALUE) === -1 ||
-    iCalString.indexOf(EVENT_END_KEY_VALUE) === -1
+    (iCalString.indexOf(EVENT_BEGIN_KEY_VALUE) === -1 ||
+      iCalString.indexOf(EVENT_END_KEY_VALUE) === -1) &&
+    (iCalString.indexOf(TODO_BEGIN_KEY_VALUE) === -1 ||
+      iCalString.indexOf(TODO_END_KEY_VALUE) === -1)
   ) {
     throw new Error(ERROR_MSG.WRONG_FORMAT);
   }
