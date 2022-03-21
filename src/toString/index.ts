@@ -164,14 +164,15 @@ const buildString = (event: EventJSON | TodoJSON, prevResult: string) => {
       const hasTimezone: boolean = valueAny.timezone;
       const isSimpleObj: boolean = !hasTimezone && valueAny.value;
       const isSimpleDate: boolean =
-        !hasTimezone && !isSimpleObj && valueAny.length === DATE_ONLY_LENGTH;
+        !hasTimezone &&
+        isSimpleObj &&
+        valueAny.value.length === DATE_ONLY_LENGTH;
 
       if (isSimpleDate) {
         // Date only for all day events
         result +=
-          foldLine(
-            `${transformToICalKey(key)}${delimiter}${parseSimpleDate(valueAny)}`
-          ) + '\n';
+          foldLine(`${transformToICalKey(key)};VALUE=DATE:${valueAny.value}`) +
+          '\n';
       } else if (isSimpleObj) {
         result +=
           foldLine(
