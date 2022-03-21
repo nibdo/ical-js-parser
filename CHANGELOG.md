@@ -1,4 +1,7 @@
 
+# 0.4.1
+- fix parsing date without time to string
+
 # 0.4.0
 - fix word breaking
 - vtodo

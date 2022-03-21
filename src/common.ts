@@ -10,7 +10,7 @@ export const DATE_KEYS: string[] = [
   'lastModified',
 ];
 
-export const DATE_ONLY_LENGTH: number = 10;
+export const DATE_ONLY_LENGTH: number = 8;
 
 export const checkIfIsDateKey = (keyValueString: string): boolean =>
   DATE_KEYS.indexOf(keyValueString) !== -1;

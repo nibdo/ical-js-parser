@@ -1,11 +1,9 @@
 {
   "compilerOptions": {
-    "lib": [
-      "es2017",
-      "dom"
-    ],
+    "module": "commonjs",
     "target": "es5",
-    "module": "es6",
+    "jsx": "react",
+    "lib": ["es2017", "es7", "es6", "dom"],
     "declaration": true,
     "outDir": "dist",
     "strict": true,
@@ -24,7 +22,7 @@
   "exclude": [
     "node_modules",
     "dist",
-    "src/test"
+    "src/test",
   ],
   "baseUrl": "src",
   "include": [

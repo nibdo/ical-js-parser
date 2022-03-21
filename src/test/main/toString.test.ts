@@ -78,4 +78,16 @@ describe('Parse to String from JSON', function () {
     assert.equal(lines[16], 'END:VEVENT');
     assert.equal(lines[17], 'END:VCALENDAR');
   });
+  it('should return string iCal event with dates without time', function () {
+    const parsedEvent = ICalParser.toString(mocks.dateWithoutTime);
+
+    const lines = parsedEvent.split('\n');
+
+    assert.equal(lines[0], 'BEGIN:VCALENDAR');
+    assert.equal(lines[1], 'PRODID:abc');
+    assert.equal(lines[2], 'VERSION:1');
+    assert.equal(lines[3], 'BEGIN:VEVENT');
+    assert.equal(lines[7], 'DTSTART;VALUE=DATE:20210329');
+    assert.equal(lines[8], 'DTEND;VALUE=DATE:20210329');
+  });
 });
