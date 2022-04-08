@@ -83,8 +83,9 @@ export interface TodoJSON {
 
 export interface ICalJSON {
   calendar: CalendarJSON;
-  events?: EventJSON[];
-  todos?: TodoJSON[];
+  events: EventJSON[];
+  todos: TodoJSON[];
+  errors: string[];
 }
 
 export interface CalendarJSON {

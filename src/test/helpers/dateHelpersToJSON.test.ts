@@ -21,7 +21,7 @@ describe('Date helpers toJSON', function () {
       try {
         formatToIsoDate(invalidDateWithTime);
       } catch (e: any) {
-        assert.equal(e.message, ERROR_MSG.INVALID_DATE);
+        assert.equal(e.message, 'Date is not valid: 20210402T930000Z');
       }
     });
 
@@ -29,7 +29,7 @@ describe('Date helpers toJSON', function () {
       try {
         formatToIsoDate('some string');
       } catch (e: any) {
-        assert.equal(e.message, ERROR_MSG.INVALID_DATE);
+        assert.equal(e.message, 'Date is not valid: some strTng00Z');
       }
     });
   });
@@ -48,7 +48,7 @@ describe('Date helpers toJSON', function () {
       try {
         parseICalDate(invalidDateWithoutTime);
       } catch (e: any) {
-        assert.equal(e.message, ERROR_MSG.INVALID_DATE);
+        assert.equal(e.message, 'Date is not valid: 20219402T00Z');
       }
     });
     it('should format date with timezone', function () {
