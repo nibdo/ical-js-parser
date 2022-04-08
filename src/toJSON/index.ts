@@ -260,13 +260,34 @@ const parseNestedValues = (values: string): KeyValue | string => {
  * @param iCalStringEvent
  */
 const toJSON = (iCalStringEvent: string): ICalJSON => {
-  // Validate string
-  validateICalString(iCalStringEvent);
+  const errors: string[] = [];
+  const events: EventJSON[] = [];
+  const todos: TodoJSON[] = [];
+  let calendar: CalendarJSON;
+
+  try {
+    // Validate string
+    validateICalString(iCalStringEvent);
+  } catch (e: any) {
+    errors.push(e.message);
+
+    return {
+      calendar: {
+        begin: '',
+        prodid: '',
+        version: '',
+        end: '',
+      },
+      events,
+      todos,
+      errors,
+    };
+  }
 
   // Get vcalendar props
   const vCalendarString: string = getVCalendarString(iCalStringEvent);
 
-  const calendar: CalendarJSON = formatVCalendarStringToObject(vCalendarString);
+  calendar = formatVCalendarStringToObject(vCalendarString);
 
   // Get base content
   let baseCalendarContent: string = iCalStringEvent.slice(
@@ -298,18 +319,32 @@ const toJSON = (iCalStringEvent: string): ICalJSON => {
   );
 
   // Parse each event to obj
-  const events: EventJSON[] = vEventsArray.map((stringEvent: string) =>
-    getOneEventJSON(stringEvent)
-  );
 
-  const todos: TodoJSON[] = vTodosArray.map((stringTodo: string) =>
-    getOneTodoJSON(stringTodo)
-  );
+  vEventsArray.forEach((stringEvent: string) => {
+    try {
+      const event = getOneEventJSON(stringEvent);
+
+      events.push(event);
+    } catch (e: any) {
+      errors.push(e.message);
+    }
+  });
+
+  vTodosArray.forEach((stringTodo: string) => {
+    try {
+      const todo = getOneTodoJSON(stringTodo);
+
+      todos.push(todo);
+    } catch (e: any) {
+      errors.push(e.message);
+    }
+  });
 
   return {
     calendar,
     events,
     todos,
+    errors,
   };
 };
 

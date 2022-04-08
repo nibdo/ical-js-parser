@@ -14,13 +14,13 @@ import { ERROR_MSG } from '../enums';
 
 export const validateISOStringDate = (stringDate: string): void => {
   if (!DateTime.fromISO(stringDate).isValid) {
-    throw new Error(ERROR_MSG.INVALID_DATE);
+    throw new Error(`${ERROR_MSG.INVALID_DATE}: ${stringDate}`);
   }
 };
 
 export const validateStringDateWithoutTime = (stringDate: string): void => {
   if (!DateTime.fromFormat(stringDate, 'yyyyMMdd').isValid) {
-    throw new Error(ERROR_MSG.INVALID_DATE);
+    throw new Error(`${ERROR_MSG.INVALID_DATE}: ${stringDate}`);
   }
 };
 

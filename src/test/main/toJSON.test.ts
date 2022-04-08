@@ -18,23 +18,23 @@ describe('Parse to JSON from string', function () {
     function () {
       const parsedEvent = ICalParser.toJSON(mocks.nestedPropsSummary);
 
-      const { summary, location, description } = parsedEvent.events[0];
+      const event = parsedEvent?.events?.[0];
 
-      assert.equal(summary, 'cv');
-      assert.equal(location, '');
-      assert.equal(description, 'ada');
+      assert.equal(event?.summary, 'cv');
+      assert.equal(event?.location, '');
+      assert.equal(event?.description, 'ada');
     }
   );
 
   it('should format date with timezone to ISO string date in UTC', function () {
     const parsedEvent = ICalParser.toJSON(mocks.dateWithTimezoneToISO);
 
-    const { dtstart, dtend } = parsedEvent.events[0];
+    const event = parsedEvent?.events?.[0];
 
-    assert.equal(dtstart.value, '20210402T010000Z');
-    assert.equal(dtstart.timezone, 'Europe/Berlin');
-    assert.equal(dtend.value, '20210402T013000Z');
-    assert.equal(dtend.timezone, 'Europe/Berlin');
+    assert.equal(event?.dtstart?.value, '20210402T010000Z');
+    assert.equal(event?.dtstart?.timezone, 'Europe/Berlin');
+    assert.equal(event?.dtend?.value, '20210402T013000Z');
+    assert.equal(event?.dtend?.timezone, 'Europe/Berlin');
   });
 
   it('should format simple date with Z', function () {
@@ -101,35 +101,29 @@ describe('Parse to JSON from string', function () {
   });
 
   it('should throw error with wrong date with time', function () {
-    try {
-      ICalParser.toJSON(mocks.wrongDateWithTime);
-    } catch (e: any) {
-      assert.equal(e.message, ERROR_MSG.INVALID_DATE);
-    }
+    const result = ICalParser.toJSON(mocks.wrongDateWithTime);
+
+    assert.equal(result?.events?.length, 1);
+    assert.equal(result.errors[0], 'Date is not valid: 20210401T990000Z');
   });
 
   it('should throw error with wrong date without time', function () {
-    try {
-      ICalParser.toJSON(mocks.wrongDateWithoutTime);
-    } catch (e: any) {
-      assert.equal(e.message, ERROR_MSG.INVALID_DATE);
-    }
+    const result = ICalParser.toJSON(mocks.wrongDateWithoutTime);
+
+    assert.equal(result?.events?.length, 1);
+    assert.equal(result.errors[0], 'Date is not valid: 20219409');
   });
 
   it('should throw error with wrong calendar format', function () {
-    try {
-      ICalParser.toJSON(mocks.wrongFormatCalendar);
-    } catch (e: any) {
-      assert.equal(e.message, ERROR_MSG.WRONG_FORMAT);
-    }
+    const result = ICalParser.toJSON(mocks.wrongFormatCalendar);
+
+    assert.equal(result.errors[0], 'Wrong format');
   });
 
   it('should throw error with wrong event format', function () {
-    try {
-      ICalParser.toJSON(mocks.wrongFormatEvent);
-    } catch (e: any) {
-      assert.equal(e.message, ERROR_MSG.WRONG_FORMAT);
-    }
+    const result = ICalParser.toJSON(mocks.wrongFormatEvent);
+
+    assert.equal(result.errors[0], 'Wrong format');
   });
 
   it('should format one attendee to JSON', function () {
