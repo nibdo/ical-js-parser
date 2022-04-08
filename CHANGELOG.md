@@ -1,4 +1,7 @@
 
+# 0.5.0
+- added errors to result
+
 # 0.4.1
 - fix parsing date without time to string
 
