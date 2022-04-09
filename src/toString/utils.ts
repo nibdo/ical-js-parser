@@ -23,7 +23,7 @@ export const formatAlarmsToString = (alarms: Alarm[]): string => {
 };
 
 export const cleanAlarmObj = (alarm: any) => {
-  const result: Alarm = { begin: 'VALARM', trigger: alarm.trigger };
+  const result: Alarm = { trigger: alarm.trigger };
 
   if (alarm.action) {
     result.action = alarm.action;
@@ -31,7 +31,6 @@ export const cleanAlarmObj = (alarm: any) => {
   if (alarm.description) {
     result.description = alarm.description;
   }
-  result.end = 'VALARM';
 
   return result;
 };
