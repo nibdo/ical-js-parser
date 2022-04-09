@@ -88,6 +88,12 @@ export interface ICalJSON {
   errors: string[];
 }
 
+export interface ICalFromJSONData {
+  calendar: CalendarJSON;
+  events?: EventJSON[];
+  todos?: TodoJSON[];
+}
+
 export interface CalendarJSON {
   begin: string;
   prodid: string;
