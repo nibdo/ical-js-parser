@@ -21,3 +21,17 @@ export const formatAlarmsToString = (alarms: Alarm[]): string => {
 
   return result;
 };
+
+export const cleanAlarmObj = (alarm: any) => {
+  const result: Alarm = { begin: 'VALARM', trigger: alarm.trigger };
+
+  if (alarm.action) {
+    result.action = alarm.action;
+  }
+  if (alarm.description) {
+    result.description = alarm.description;
+  }
+  result.end = 'VALARM';
+
+  return result;
+};
