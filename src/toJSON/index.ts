@@ -28,6 +28,7 @@ import {
 } from './formatHelpers';
 import { validateICalString } from './validator';
 import { extractProperty, removeProperty, splitDataSetsByKey } from './utils';
+import { cleanAlarmObj } from '../toString/utils';
 
 /**
  * Extract only calendar string part
@@ -132,7 +133,7 @@ const getResult = (rawString: string) => {
     alarmStrings.forEach((item) => {
       const alarmObj: any = {};
       formatStringToKeyValueObj(item, alarmObj);
-      eventObj.alarms.push(alarmObj);
+      eventObj.alarms.push(cleanAlarmObj(alarmObj));
     });
   }
 

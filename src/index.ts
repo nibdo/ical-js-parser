@@ -3,7 +3,7 @@ import toJSON from './toJSON';
 
 export interface ICalParser {
   toJSON: (item: string) => ICalJSON;
-  toString: (item: ICalJSON) => string;
+  toString: (item: ICalFromJSONData) => string;
 }
 
 export interface DateTimeObject {
@@ -86,6 +86,12 @@ export interface ICalJSON {
   events: EventJSON[];
   todos: TodoJSON[];
   errors: string[];
+}
+
+export interface ICalFromJSONData {
+  calendar: CalendarJSON;
+  events?: EventJSON[];
+  todos?: TodoJSON[];
 }
 
 export interface CalendarJSON {

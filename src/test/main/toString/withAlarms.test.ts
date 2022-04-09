@@ -15,12 +15,12 @@ describe('Parse to String from JSON with alarms', function () {
       'ORGANIZER;EMAIL=buia@test.com:mailto:buia@test.com'
     );
     assert.equal(lines[9], 'BEGIN:VALARM');
-    assert.equal(lines[10], 'TRIGGER=10M');
-    assert.equal(lines[11], 'ACTION=DISPLAY');
+    assert.equal(lines[10], 'TRIGGER:10M');
+    assert.equal(lines[11], 'ACTION:DISPLAY');
     assert.equal(lines[12], 'END:VALARM');
     assert.equal(lines[13], 'BEGIN:VALARM');
-    assert.equal(lines[14], 'TRIGGER=20M');
-    assert.equal(lines[15], 'ACTION=DISPLAY');
+    assert.equal(lines[14], 'TRIGGER:20M');
+    assert.equal(lines[15], 'ACTION:DISPLAY');
     assert.equal(lines[16], 'END:VALARM');
     assert.equal(lines[17], 'DTSTART:20210401T100000Z');
   });
