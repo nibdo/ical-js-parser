@@ -2,7 +2,7 @@ import { DateTime } from 'luxon';
 
 import { checkIfIsDateKey, DATE_ONLY_LENGTH, MAX_LINE_LENGTH } from '../common';
 import { ALARMS_KEY, ATTENDEE_KEY, ORGANIZER_KEY } from '../constants';
-import { EventJSON, ICalJSON, TodoJSON } from '../index';
+import { EventJSON, ICalFromJSONData, TodoJSON } from '../index';
 import { formatAlarmsToString } from './utils';
 
 const CALENDAR_BEGIN: string = 'BEGIN:VCALENDAR\n';
@@ -216,7 +216,7 @@ const buildString = (event: EventJSON | TodoJSON, prevResult: string) => {
  * Build iCal string
  * @param iCalObj
  */
-const toString = (iCalObj: ICalJSON): string => {
+const toString = (iCalObj: ICalFromJSONData): string => {
   const { calendar, events, todos } = iCalObj;
 
   const { prodid, version, calscale, method } = calendar;
