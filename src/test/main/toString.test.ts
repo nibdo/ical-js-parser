@@ -58,10 +58,7 @@ describe('Parse to String from JSON', function () {
     assert.equal(lines[5], 'DTSTAMP:20210330T193200Z');
     assert.equal(lines[6], 'UID:CaqugAe----1165932647582@test.com');
     assert.equal(lines[7], 'SUMMARY:saf');
-    assert.equal(
-      lines[8],
-      'ORGANIZER;EMAIL=buia@test.com:mailto:buia@test.com'
-    );
+    assert.equal(lines[8], 'ORGANIZER;CN=buia:mailto:buia@test.com');
     assert.equal(
       lines[9],
       'ATTENDEE;PARTSTAT=ACCEPTED;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;EMAIL=bat'
@@ -75,8 +72,9 @@ describe('Parse to String from JSON', function () {
     assert.equal(lines[13], 'DTSTART:20210401T100000Z');
     assert.equal(lines[14], 'DTEND:20210401T103000Z');
     assert.equal(lines[15], 'SEQUENCE:1');
-    assert.equal(lines[16], 'END:VEVENT');
-    assert.equal(lines[17], 'END:VCALENDAR');
+    assert.equal(lines[16], 'X-TEST-SAMPLE:test');
+    assert.equal(lines[17], 'END:VEVENT');
+    assert.equal(lines[18], 'END:VCALENDAR');
   });
   it('should return string iCal event with dates without time', function () {
     const parsedEvent = ICalParser.toString(mocks.dateWithoutTime);

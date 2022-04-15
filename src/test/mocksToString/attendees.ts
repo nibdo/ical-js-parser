@@ -1,4 +1,4 @@
-import {ICalJSON} from "../../index";
+import { ICalJSON } from '../../index';
 
 export const attendeesTestData: ICalJSON = {
   calendar: {
@@ -14,7 +14,7 @@ export const attendeesTestData: ICalJSON = {
       dtstamp: { value: '2021-03-30T19:32:00Z' },
       uid: 'CaqugAe----1165932647582@test.com',
       summary: 'saf',
-      organizer: { EMAIL: 'buia@test.com', mailto: 'buia@test.com' },
+      organizer: { CN: 'buia', mailto: 'buia@test.com' },
       attendee: [
         {
           PARTSTAT: 'ACCEPTED',
@@ -34,6 +34,7 @@ export const attendeesTestData: ICalJSON = {
       dtstart: { value: '2021-04-01T10:00:00Z' },
       dtend: { value: '2021-04-01T10:30:00Z' },
       sequence: '1',
+      xTestSample: 'test',
       end: 'VEVENT',
     },
   ],

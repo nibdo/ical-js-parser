@@ -42,7 +42,7 @@ export const foldLine = (row: string): string => {
 const addKeyValue = (prevData: string, key: string, value: string): string =>
   `${prevData}${key}${value}\n`;
 
-const transformToICalKey = (key: string): string => {
+export const transformToICalKey = (key: string): string => {
   let result: string = '';
 
   for (let i: number = 0; i < key.length; i += 1) {

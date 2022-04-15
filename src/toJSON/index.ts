@@ -60,7 +60,9 @@ const formatVCalendarStringToObject = (
 
     const { key, value } = keyValue;
 
-    result[key] = value;
+    if (key !== '' && value !== '') {
+      result[key] = value;
+    }
   }
 
   return result;
@@ -133,7 +135,11 @@ const getResult = (rawString: string) => {
     alarmStrings.forEach((item) => {
       const alarmObj: any = {};
       formatStringToKeyValueObj(item, alarmObj);
-      eventObj.alarms.push(cleanAlarmObj(alarmObj));
+
+      const cleanedAlarm = cleanAlarmObj(alarmObj);
+      if (cleanedAlarm) {
+        eventObj.alarms.push(cleanedAlarm);
+      }
     });
   }
 

@@ -1,5 +1,5 @@
 import { Alarm } from '../index';
-import { foldLine } from './index';
+import { foldLine, transformToICalKey } from './index';
 
 export const mapObjToString = (obj: any) => {
   let result: string = '';
@@ -13,7 +13,7 @@ export const mapObjToString = (obj: any) => {
 export const mapAlarmObjToString = (obj: any) => {
   let result: string = '';
   for (const [key, value] of Object.entries(obj)) {
-    result = result + key.toUpperCase() + ':' + value + '\n';
+    result = result + transformToICalKey(key) + ':' + value + '\n';
   }
 
   return result;
@@ -32,14 +32,33 @@ export const formatAlarmsToString = (alarms: Alarm[]): string => {
 };
 
 export const cleanAlarmObj = (alarm: any) => {
-  const result: Alarm = { trigger: alarm.trigger };
+  delete alarm.valar;
+  delete alarm.begin;
+  delete alarm.end;
 
-  if (alarm.action) {
-    result.action = alarm.action;
-  }
-  if (alarm.description) {
-    result.description = alarm.description;
+  // not supported
+  if (alarm.trigger?.RELATED) {
+    return null;
   }
 
-  return result;
+  if (alarm.trigger?.VALUE) {
+    let parsedValue = alarm.trigger.VALUE;
+
+    if (parsedValue.indexOf('DURATION:') !== -1) {
+      parsedValue = parsedValue.slice('DURATION:'.length);
+    }
+
+    alarm.trigger = parsedValue;
+  }
+
+  // not supported
+  if (alarm.trigger?.indexOf('DATE-TIME') !== -1) {
+    return null;
+  }
+
+  if (alarm.trigger?.indexOf('DT') !== -1) {
+    return null;
+  }
+
+  return alarm;
 };

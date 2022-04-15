@@ -23,6 +23,7 @@ export const alarmsData: ICalJSON = {
         {
           trigger: '20M',
           action: 'DISPLAY',
+          xSampleTest: 'test',
         },
       ],
       dtstart: { value: '2021-04-01T10:00:00Z' },
