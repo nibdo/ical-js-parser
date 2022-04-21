@@ -13,6 +13,7 @@ import {
   ATTENDEE_KEY,
   CALENDAR_END_KEY_VALUE,
   EVENT_BEGIN_KEY_VALUE,
+  EXDATE_KEY,
   MAILTO_KEY,
   MAILTO_KEY_WITH_DELIMITER,
   RRULE_ICAL_KEY,
@@ -105,6 +106,10 @@ export const formatStringToKeyValueObj = (
     if (key === ATTENDEE_KEY) {
       eventObj[ATTENDEE_KEY] = Array.isArray(eventObj[ATTENDEE_KEY])
         ? [...eventObj[ATTENDEE_KEY], value]
+        : [value];
+    } else if (key === EXDATE_KEY) {
+      eventObj[EXDATE_KEY] = Array.isArray(eventObj[EXDATE_KEY])
+        ? [...eventObj[EXDATE_KEY], value]
         : [value];
     } else {
       eventObj[key] = value;

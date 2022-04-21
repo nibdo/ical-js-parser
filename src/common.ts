@@ -8,6 +8,8 @@ export const DATE_KEYS: string[] = [
   'dtstamp',
   'created',
   'lastModified',
+  'exdate',
+  'recurrenceId',
 ];
 
 export const DATE_ONLY_LENGTH: number = 8;
