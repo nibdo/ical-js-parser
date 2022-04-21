@@ -57,8 +57,9 @@ export interface EventJSON {
   transp?: string;
   rrule?: string;
   status?: string;
-  recurrenceId?: { TZID: string } | string;
+  recurrenceId?: DateTimeObject;
   alarms?: Alarm[];
+  exdate?: DateTimeObject[];
   [key: string]: any;
 }
 
