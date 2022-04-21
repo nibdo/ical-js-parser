@@ -134,9 +134,15 @@ const parseUtcDateObj = (utcDate: any): string =>
   addZ(parseUtcToTimestamp(utcDate.value));
 
 const parseDateWithTimezone = (dateObj: any): string => {
-  const adjustedDateTime: string = DateTime.fromISO(dateObj.value)
-    .setZone(dateObj.timezone)
-    .toString();
+  const adjustedDateTimeRaw = DateTime.fromISO(dateObj.value).setZone(
+    dateObj.timezone
+  );
+
+  if (adjustedDateTimeRaw.invalidReason === 'unsupported zone') {
+    throw Error(`${adjustedDateTimeRaw?.invalidReason} ${adjustedDateTimeRaw}`);
+  }
+
+  const adjustedDateTime = adjustedDateTimeRaw.toString();
 
   const formatFromUtc: string = removeZ(parseUtcToTimestamp(adjustedDateTime));
 
