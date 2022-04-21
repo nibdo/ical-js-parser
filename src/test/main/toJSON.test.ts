@@ -1,6 +1,7 @@
 import ICalParser from '../../index';
 import mocks from '../mocksToJSON';
 import { ERROR_MSG } from '../../enums';
+import { timeFormats } from '../mocksToJSON/timeFormats';
 
 const assert = require('assert');
 
@@ -103,15 +104,16 @@ describe('Parse to JSON from string', function () {
   it('should throw error with wrong date with time', function () {
     const result = ICalParser.toJSON(mocks.wrongDateWithTime);
 
+    assert.equal(result.errors[0], 'Invalid date: 20210401T990000Z');
     assert.equal(result?.events?.length, 1);
-    assert.equal(result.errors[0], 'Date is not valid: 20210401T990000Z');
   });
 
   it('should throw error with wrong date without time', function () {
     const result = ICalParser.toJSON(mocks.wrongDateWithoutTime);
 
     assert.equal(result?.events?.length, 1);
-    assert.equal(result.errors[0], 'Date is not valid: 20219409');
+    assert.equal(result?.errors?.length, 1);
+    assert.equal(result.errors[0], 'Invalid date: 20219409');
   });
 
   it('should throw error with wrong calendar format', function () {
@@ -168,5 +170,21 @@ describe('Parse to JSON from string', function () {
     assert.equal(dtstart.value, '20211227T150000Z');
     assert.equal(dtend.value, '20211227T160000Z');
     assert.equal(rrule, undefined);
+  });
+
+  it('Format various date times', function () {
+    const parsedEvent = ICalParser.toJSON(mocks.timeFormats);
+
+    assert.equal(parsedEvent.errors.length, 1);
+    assert.equal(parsedEvent.events.length, 3);
+
+    assert.equal(parsedEvent.errors[0], 'unsupported zone US-Eastern');
+
+    assert.equal(parsedEvent.events[0].dtstart.value, '20200616T060000Z');
+    assert.equal(parsedEvent.events[0].dtend.value, '20200616T060000Z');
+    assert.equal(parsedEvent.events[1].dtstart.value, '20210218T110000Z');
+    assert.equal(parsedEvent.events[1].dtend.value, '20210218T120000Z');
+    assert.equal(parsedEvent.events[2].dtstart.value, '20210201T080000Z');
+    assert.equal(parsedEvent.events[2].dtend.value, '20210201T100000Z');
   });
 });

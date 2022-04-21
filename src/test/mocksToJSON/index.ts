@@ -3,7 +3,7 @@ import { dateWithTimezoneToISO } from './dateWithTimezoneToISO';
 import { simpleDateWithZ } from './simpleDateWithZ';
 import { simpleDateWithoutZ } from './simpleDateWithoutZ';
 import { wrongDateWithoutTime } from './wrongDateWithoutTime';
-import { wrongDateWithTime } from './wrongDateWithTime';
+import { invalidDate1, wrongDateWithTime } from './wrongDateWithTime';
 import { oneAttendee } from './oneAttendee';
 import { tzidDateCETWrongFormat } from './tzidDateCETWrongFormat';
 import { wrongFormatCalendar } from './wrongFormatCalendar';
@@ -17,6 +17,7 @@ import {
   withNotSupportedAlarm,
 } from './withAlarms';
 import { withTodos } from './withTodos';
+import { timeFormats } from './timeFormats';
 
 export default {
   nestedPropsSummary,
@@ -36,4 +37,6 @@ export default {
   withAlarmsNested,
   withNotSupportedAlarm,
   withTodos,
+  timeFormats,
+  invalidDate1,
 };
