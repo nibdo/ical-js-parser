@@ -1,3 +1,8 @@
+# 0.6.1
+- fixed parsing exceptions to string
+
+# 0.6.0
+- added exceptions, support for more time formats
 
 # 0.5.0
 - added errors to result
