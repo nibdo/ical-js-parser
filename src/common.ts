@@ -12,7 +12,18 @@ export const DATE_KEYS: string[] = [
   'recurrenceId',
 ];
 
+export const DATE_KEYS_TO_STRING: string[] = [
+  'dtstart',
+  'dtend',
+  'dtstamp',
+  'created',
+  'lastModified',
+  'recurrenceId',
+];
+
 export const DATE_ONLY_LENGTH: number = 8;
 
 export const checkIfIsDateKey = (keyValueString: string): boolean =>
   DATE_KEYS.indexOf(keyValueString) !== -1;
+export const checkIfIsDateKeyToString = (keyValueString: string): boolean =>
+  DATE_KEYS_TO_STRING.indexOf(keyValueString) !== -1;
