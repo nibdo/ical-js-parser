@@ -1,9 +1,19 @@
 import { DateTime } from 'luxon';
 
-import { checkIfIsDateKey, DATE_ONLY_LENGTH, MAX_LINE_LENGTH } from '../common';
-import { ALARMS_KEY, ATTENDEE_KEY, ORGANIZER_KEY } from '../constants';
+import {
+  checkIfIsDateKey,
+  checkIfIsDateKeyToString,
+  DATE_ONLY_LENGTH,
+  MAX_LINE_LENGTH,
+} from '../common';
+import {
+  ALARMS_KEY,
+  ATTENDEE_KEY,
+  EXDATE_KEY,
+  ORGANIZER_KEY,
+} from '../constants';
 import { EventJSON, ICalFromJSONData, TodoJSON } from '../index';
-import { formatAlarmsToString } from './utils';
+import { formatAlarmsToString, formatExDatesToString } from './utils';
 
 const CALENDAR_BEGIN: string = 'BEGIN:VCALENDAR\n';
 const CALENDAR_END: string = 'END:VCALENDAR';
@@ -110,7 +120,7 @@ const parseSimpleDate = (date: string): string => {
   return addZ(result);
 };
 
-const parseUtcToTimestamp = (utcDate: string): string => {
+export const parseUtcToTimestamp = (utcDate: string): string => {
   let result: string = '';
 
   for (let i: number = 0; i < utcDate.length; i += 1) {
@@ -130,10 +140,10 @@ const parseUtcToTimestamp = (utcDate: string): string => {
   return result;
 };
 
-const parseUtcDateObj = (utcDate: any): string =>
+export const parseUtcDateObj = (utcDate: any): string =>
   addZ(parseUtcToTimestamp(utcDate.value));
 
-const parseDateWithTimezone = (dateObj: any): string => {
+export const parseDateWithTimezone = (dateObj: any): string => {
   const adjustedDateTimeRaw = DateTime.fromISO(dateObj.value).setZone(
     dateObj.timezone
   );
@@ -160,10 +170,11 @@ const buildString = (event: EventJSON | TodoJSON, prevResult: string) => {
     // Rules
     const isValueArray: boolean = Array.isArray(valueAny);
     let delimiter: string = isValueArray ? ';' : ':';
-    const isDateKey: boolean = checkIfIsDateKey(key);
+    const isDateKey: boolean = checkIfIsDateKeyToString(key);
     const isAttendeeKey: boolean = key === ATTENDEE_KEY;
     const isOrganizerKey: boolean = key === ORGANIZER_KEY;
     const isAlarmsKey: boolean = key === ALARMS_KEY;
+    const isExDateKey: boolean = key === EXDATE_KEY;
 
     // Different rules for dates
     if (isDateKey) {
@@ -209,6 +220,8 @@ const buildString = (event: EventJSON | TodoJSON, prevResult: string) => {
       result += foldLine('ORGANIZER;' + mapObjToString(valueAny)) + '\n';
     } else if (isAlarmsKey) {
       result += formatAlarmsToString(valueAny);
+    } else if (isExDateKey) {
+      result += formatExDatesToString(valueAny);
     } else {
       result +=
         foldLine(`${transformToICalKey(key)}${delimiter}${valueAny}`) + '\n';

@@ -3,6 +3,7 @@ import { dateNestedTestData } from './dateNested';
 import { alarmsData } from './alarms';
 import { todosData } from './todos';
 import { dateWithoutTime } from './dateWithoutTime';
+import { exdateTestData } from './exdates';
 
 export default {
   dateNestedTestData,
@@ -10,4 +11,5 @@ export default {
   alarmsData,
   todosData,
   dateWithoutTime,
+  exdateTestData,
 };
