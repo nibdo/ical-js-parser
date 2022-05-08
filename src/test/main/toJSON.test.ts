@@ -32,9 +32,9 @@ describe('Parse to JSON from string', function () {
 
     const event = parsedEvent?.events?.[0];
 
-    assert.equal(event?.dtstart?.value, '20210402T010000Z');
+    assert.equal(event?.dtstart?.value, '20210402T030000');
     assert.equal(event?.dtstart?.timezone, 'Europe/Berlin');
-    assert.equal(event?.dtend?.value, '20210402T013000Z');
+    assert.equal(event?.dtend?.value, '20210402T033000');
     assert.equal(event?.dtend?.timezone, 'Europe/Berlin');
   });
 
@@ -75,9 +75,9 @@ describe('Parse to JSON from string', function () {
 
     const { dtstart, dtend } = parsedEvent.events[0];
 
-    assert.equal(dtstart.value, '20210510T130000Z');
+    assert.equal(dtstart.value, '20210510T150000');
     assert.equal(dtstart.timezone, 'CET');
-    assert.equal(dtend.value, '20210510T134000Z');
+    assert.equal(dtend.value, '20210510T154000');
     assert.equal(dtend.timezone, 'CET');
   });
 
@@ -167,8 +167,8 @@ describe('Parse to JSON from string', function () {
 
     const { dtstart, dtend, rrule } = parsedEvent.events[0];
 
-    assert.equal(dtstart.value, '20211227T150000Z');
-    assert.equal(dtend.value, '20211227T160000Z');
+    assert.equal(dtstart.value, '20211227T160000');
+    assert.equal(dtend.value, '20211227T170000');
     assert.equal(rrule, undefined);
   });
 
@@ -180,8 +180,8 @@ describe('Parse to JSON from string', function () {
 
     assert.equal(parsedEvent.errors[0], 'unsupported zone US-Eastern');
 
-    assert.equal(parsedEvent.events[0].dtstart.value, '20200616T060000Z');
-    assert.equal(parsedEvent.events[0].dtend.value, '20200616T060000Z');
+    assert.equal(parsedEvent.events[0].dtstart.value, '20200616T060000');
+    assert.equal(parsedEvent.events[0].dtend.value, '20200616T060000');
     assert.equal(parsedEvent.events[1].dtstart.value, '20210218T110000Z');
     assert.equal(parsedEvent.events[1].dtend.value, '20210218T120000Z');
     assert.equal(parsedEvent.events[2].dtstart.value, '20210201T080000Z');

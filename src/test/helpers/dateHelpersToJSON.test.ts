@@ -54,7 +54,7 @@ describe('Date helpers toJSON', function () {
     it('should format date with timezone', function () {
       const result = parseICalDate(validDateWithTimezone);
 
-      assert.equal(result.value, '20210402T010000Z');
+      assert.equal(result.value, '20210402T030000');
       assert.equal(result.timezone, 'Europe/Berlin');
     });
   });

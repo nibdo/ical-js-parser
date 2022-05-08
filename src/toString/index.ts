@@ -72,15 +72,22 @@ export const transformToICalKey = (key: string): string => {
 const mapObjToString = (obj: any): string => {
   let result: string = '';
 
+  let mailtoValue = ':mailto:';
   for (const [key, value] of Object.entries(obj)) {
     if (key !== 'mailto') {
       result = result + key.toUpperCase() + '=' + value + ';';
     } else {
-      result = result.slice(0, -1) + ':mailto:' + value;
+      mailtoValue = mailtoValue + value;
     }
   }
 
-  return result;
+  const endingNeedsSlice =
+    result.slice(result.length - 1, result.length) === ';';
+
+  return (
+    (endingNeedsSlice ? result.slice(0, result.length - 1) : result) +
+    mailtoValue
+  );
 };
 
 const removeDot = (date: string): string => {

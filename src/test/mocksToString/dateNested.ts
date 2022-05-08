@@ -1,5 +1,6 @@
-import {ICalJSON} from "../../index";
+import { ICalJSON } from '../../index';
 
+// @ts-ignore
 export const dateNestedTestData: ICalJSON = {
   calendar: {
     begin: 'VCALENDAR',
