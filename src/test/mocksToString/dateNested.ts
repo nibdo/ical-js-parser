@@ -15,11 +15,11 @@ export const dateNestedTestData: ICalJSON = {
       uid: '040000008200E00074C5B7101A82E00800000000DF9560970228D701000000000000000',
       summary: 'cv',
       dtstart: {
-        value: '2021-03-29T07:00:00.668Z',
+        value: '20210329T090000',
         timezone: 'Europe/Berlin',
       },
       dtend: {
-        value: '2021-03-29T07:30:00.668Z',
+        value: '20210329T093000',
         timezone: 'Europe/Berlin',
       },
       class: 'PUBLIC',
