@@ -151,9 +151,9 @@ export const parseUtcDateObj = (utcDate: any): string =>
   addZ(parseUtcToTimestamp(utcDate.value));
 
 export const parseDateWithTimezone = (dateObj: any): string => {
-  const adjustedDateTimeRaw = DateTime.fromISO(dateObj.value).setZone(
-    dateObj.timezone
-  );
+  const adjustedDateTimeRaw = DateTime.fromISO(dateObj.value, {
+    zone: dateObj.timezone,
+  });
 
   if (adjustedDateTimeRaw.invalidReason === 'unsupported zone') {
     throw Error(`${adjustedDateTimeRaw?.invalidReason} ${adjustedDateTimeRaw}`);
@@ -163,7 +163,9 @@ export const parseDateWithTimezone = (dateObj: any): string => {
 
   const formatFromUtc: string = removeZ(parseUtcToTimestamp(adjustedDateTime));
 
-  return `TZID=${dateObj.timezone}:${formatFromUtc}`;
+  return `TZID=${dateObj.timezone}:${adjustedDateTimeRaw.toFormat(
+    "yyyyMMdd'T'HHmmss"
+  )}`;
 };
 
 const buildString = (event: EventJSON | TodoJSON, prevResult: string) => {
