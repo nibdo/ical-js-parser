@@ -54,6 +54,7 @@ export const formatExDatesToString = (exDates: any): string => {
         foldLine(`${transformToICalKey('exdate')};VALUE=DATE:${item.value}`) +
         '\n';
     } else if (isSimpleObj) {
+      delimiter = ':';
       result +=
         foldLine(
           `${transformToICalKey('exdate')}${delimiter}${parseUtcDateObj(item)}`
@@ -68,6 +69,7 @@ export const formatExDatesToString = (exDates: any): string => {
           )}`
         ) + '\n';
     } else {
+      delimiter = ':';
       result +=
         foldLine(
           `${transformToICalKey('exdate')}${delimiter}${parseUtcToTimestamp(

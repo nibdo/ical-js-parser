@@ -1,4 +1,4 @@
-import { RECURSION_MAX_COUNT } from '../constants';
+import { EXDATE_KEY, RECURSION_MAX_COUNT } from '../constants';
 import { ExtractProperty } from '../interface';
 
 /**
@@ -84,4 +84,39 @@ export const splitDataSetsByKey = (stringData: string, key: string) => {
   result = result.map((item: string) => `${key}${item}`);
 
   return result;
+};
+
+export const removeSpaceAndNewLine = (
+  value: string,
+  counter: number = 0
+): string => {
+  const hasSpace = value.indexOf(' ') !== -1;
+  const hasNewLine = value.indexOf('\n') !== -1;
+
+  if (counter > 1000) {
+    return value;
+  }
+
+  if (!hasSpace && !hasNewLine) {
+    return value;
+  }
+
+  let result = value;
+
+  if (hasSpace) {
+    result = result.replace(' ', '');
+  }
+  if (hasNewLine) {
+    result = result.replace('\n', '');
+  }
+
+  return removeSpaceAndNewLine(result, counter + 1);
+};
+
+export const isExDateArray = (key: string, value: string) => {
+  if (key === EXDATE_KEY && value.indexOf(',') !== -1) {
+    return true;
+  }
+
+  return false;
 };

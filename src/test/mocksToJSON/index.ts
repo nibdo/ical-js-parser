@@ -18,7 +18,7 @@ import {
 } from './withAlarms';
 import { withTodos } from './withTodos';
 import { timeFormats } from './timeFormats';
-import { withExceptions } from './withExceptions';
+import { withExceptions, withMultipleExceptions } from './withExceptions';
 
 export default {
   nestedPropsSummary,
@@ -41,4 +41,5 @@ export default {
   timeFormats,
   invalidDate1,
   withExceptions,
+  withMultipleExceptions,
 };
