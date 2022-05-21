@@ -28,7 +28,13 @@ import {
   splitRowsToArray,
 } from './formatHelpers';
 import { validateICalString } from './validator';
-import { extractProperty, removeProperty, splitDataSetsByKey } from './utils';
+import {
+  extractProperty,
+  isExDateArray,
+  removeProperty,
+  removeSpaceAndNewLine,
+  splitDataSetsByKey,
+} from './utils';
 import { cleanAlarmObj } from '../toString/utils';
 
 /**
@@ -108,9 +114,13 @@ export const formatStringToKeyValueObj = (
         ? [...eventObj[ATTENDEE_KEY], value]
         : [value];
     } else if (key === EXDATE_KEY) {
-      eventObj[EXDATE_KEY] = Array.isArray(eventObj[EXDATE_KEY])
-        ? [...eventObj[EXDATE_KEY], value]
-        : [value];
+      if (Array.isArray(value)) {
+        eventObj[EXDATE_KEY] = [...value];
+      } else {
+        eventObj[EXDATE_KEY] = Array.isArray(eventObj[EXDATE_KEY])
+          ? [...eventObj[EXDATE_KEY], value]
+          : [value];
+      }
     } else {
       eventObj[key] = value;
     }
@@ -200,7 +210,14 @@ const splitRowToKeyValueObj = (item: string): KeyValue => {
   }
 
   if (isDateKey) {
-    value = parseICalDate(value) as DateTimeObject;
+    if (isExDateArray(key, value)) {
+      const arrayValues = removeSpaceAndNewLine(value).split(',');
+      value = arrayValues.map(
+        (value) => parseICalDate(value) as DateTimeObject
+      );
+    } else {
+      value = parseICalDate(value) as DateTimeObject;
+    }
   }
 
   // UID cant have any space between chars

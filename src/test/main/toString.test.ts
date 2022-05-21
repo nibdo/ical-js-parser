@@ -93,7 +93,7 @@ describe('Parse to String from JSON', function () {
 
     const lines = parsedEvent.split('\n');
 
-    assert.equal(lines[17], 'EXDATE;20210402T205600Z');
+    assert.equal(lines[17], 'EXDATE:20210402T205600Z');
     assert.equal(lines[18], 'EXDATE;TZID=Europe/Berlin:20210329T090000');
   });
   it('should return string iCal event with dates without time', function () {

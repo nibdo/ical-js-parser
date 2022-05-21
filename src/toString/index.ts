@@ -12,7 +12,12 @@ import {
   EXDATE_KEY,
   ORGANIZER_KEY,
 } from '../constants';
-import { EventJSON, ICalFromJSONData, TodoJSON } from '../index';
+import {
+  DateTimeObject,
+  EventJSON,
+  ICalFromJSONData,
+  TodoJSON,
+} from '../index';
 import { formatAlarmsToString, formatExDatesToString } from './utils';
 
 const CALENDAR_BEGIN: string = 'BEGIN:VCALENDAR\n';
@@ -186,7 +191,9 @@ const buildString = (event: EventJSON | TodoJSON, prevResult: string) => {
     const isExDateKey: boolean = key === EXDATE_KEY;
 
     // Different rules for dates
-    if (isDateKey) {
+    if (isExDateKey) {
+      result += formatExDatesToString(valueAny);
+    } else if (isDateKey) {
       const hasTimezone: boolean = valueAny.timezone;
       const isSimpleObj: boolean = !hasTimezone && valueAny.value;
       const isSimpleDate: boolean =
@@ -229,8 +236,6 @@ const buildString = (event: EventJSON | TodoJSON, prevResult: string) => {
       result += foldLine('ORGANIZER;' + mapObjToString(valueAny)) + '\n';
     } else if (isAlarmsKey) {
       result += formatAlarmsToString(valueAny);
-    } else if (isExDateKey) {
-      result += formatExDatesToString(valueAny);
     } else {
       result +=
         foldLine(`${transformToICalKey(key)}${delimiter}${valueAny}`) + '\n';
