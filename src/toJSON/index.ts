@@ -7,7 +7,7 @@ import {
   KeyValue,
   TodoJSON,
 } from '../index';
-import { parseICalDate } from './dateHelpers';
+import { parseICalDate, removeArtifacts } from './dateHelpers';
 import {
   ALWAYS_STRING_VALUES,
   ATTENDEE_KEY,
@@ -213,10 +213,10 @@ const splitRowToKeyValueObj = (item: string): KeyValue => {
     if (isExDateArray(key, value)) {
       const arrayValues = removeSpaceAndNewLine(value).split(',');
       value = arrayValues.map(
-        (value) => parseICalDate(value) as DateTimeObject
+        (value) => parseICalDate(removeArtifacts(value)) as DateTimeObject
       );
     } else {
-      value = parseICalDate(value) as DateTimeObject;
+      value = parseICalDate(removeArtifacts(value)) as DateTimeObject;
     }
   }
 

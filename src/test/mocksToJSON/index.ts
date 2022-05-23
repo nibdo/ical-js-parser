@@ -1,6 +1,9 @@
 import { nestedPropsSummary } from './nestedPropsSummary';
 import { dateWithTimezoneToISO } from './dateWithTimezoneToISO';
-import { simpleDateWithZ } from './simpleDateWithZ';
+import {
+  simpleDateWithZ,
+  simpleDateWithZWithArtifacts,
+} from './simpleDateWithZ';
 import { simpleDateWithoutZ } from './simpleDateWithoutZ';
 import { wrongDateWithoutTime } from './wrongDateWithoutTime';
 import { invalidDate1, wrongDateWithTime } from './wrongDateWithTime';
@@ -42,4 +45,5 @@ export default {
   invalidDate1,
   withExceptions,
   withMultipleExceptions,
+  simpleDateWithZWithArtifacts,
 };

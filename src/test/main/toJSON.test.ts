@@ -187,4 +187,32 @@ describe('Parse to JSON from string', function () {
     assert.equal(parsedEvent.events[2].dtstart.value, '20210201T080000Z');
     assert.equal(parsedEvent.events[2].dtend.value, '20210201T100000Z');
   });
+
+  it('Format dates with artifacts', function () {
+    const parsedEvent = ICalParser.toJSON(mocks.simpleDateWithZWithArtifacts);
+
+    assert.equal(parsedEvent.errors.length, 0);
+    assert.equal(parsedEvent.events.length, 2);
+
+    assert.equal(parsedEvent.events[0].dtstart.value, '20210401T110000Z');
+    assert.equal(parsedEvent.events[0].dtend.value, '20210401T113000Z');
+    assert.equal(
+      JSON.stringify(parsedEvent.events[0].exdate).indexOf('\r'),
+      -1
+    );
+    assert.equal(
+      JSON.stringify(parsedEvent.events[0].exdate).indexOf('\n'),
+      -1
+    );
+    assert.equal(parsedEvent.events[1].dtstart.value, '20210401T110000Z');
+    assert.equal(parsedEvent.events[1].dtend.value, '20210401T113000Z');
+    assert.equal(
+      JSON.stringify(parsedEvent.events[1].exdate).indexOf('\r'),
+      -1
+    );
+    assert.equal(
+      JSON.stringify(parsedEvent.events[1].exdate).indexOf('\n'),
+      -1
+    );
+  });
 });

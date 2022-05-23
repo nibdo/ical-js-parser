@@ -64,6 +64,27 @@ export const getBaseDate = (date: string): string => {
   return result;
 };
 
+export const removeArtifacts = (value: string, counter: number = 0): string => {
+  if (counter > 30) {
+    return value;
+  }
+
+  let newValue = value;
+
+  const hasSlashN = value.indexOf('\n') !== -1;
+  const hasSlashR = value.indexOf('\r') !== -1;
+
+  if (hasSlashN) {
+    newValue = newValue.replace('\n', '');
+  }
+
+  if (hasSlashR) {
+    newValue = newValue.replace('\r', '');
+  }
+
+  return removeArtifacts(newValue, counter + 1);
+};
+
 /**
  * Better formatting for dates
  * @param iCalDate
