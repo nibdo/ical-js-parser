@@ -194,7 +194,6 @@ describe('Parse to JSON from string', function () {
     assert.equal(parsedEvent.errors.length, 0);
     assert.equal(parsedEvent.events.length, 2);
 
-    assert.equal(parsedEvent.events[0].dtstart.value, '20210401T110000Z');
     assert.equal(parsedEvent.events[0].dtend.value, '20210401T113000Z');
     assert.equal(
       JSON.stringify(parsedEvent.events[0].exdate).indexOf('\r'),
@@ -213,6 +212,10 @@ describe('Parse to JSON from string', function () {
     assert.equal(
       JSON.stringify(parsedEvent.events[1].exdate).indexOf('\n'),
       -1
+    );
+    assert.equal(
+      parsedEvent.events[1].rrule,
+      'FREQ=WEEKLY;INTERVAL=1;BYDAY=MO'
     );
   });
 });

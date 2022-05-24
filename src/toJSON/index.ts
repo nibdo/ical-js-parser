@@ -225,6 +225,10 @@ const splitRowToKeyValueObj = (item: string): KeyValue => {
     value = value.replace(' ', '');
   }
 
+  if (key === RRULE_KEY) {
+    value = removeArtifacts(value);
+  }
+
   return {
     key,
     value,
