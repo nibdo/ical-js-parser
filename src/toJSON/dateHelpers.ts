@@ -85,6 +85,22 @@ export const removeArtifacts = (value: string, counter: number = 0): string => {
   return removeArtifacts(newValue, counter + 1);
 };
 
+export const removeSpaces = (value: string, counter: number = 0): string => {
+  if (counter > 30) {
+    return value;
+  }
+
+  let newValue = value;
+
+  if (newValue.indexOf(' ') !== -1) {
+    newValue = newValue.replace(' ', '');
+  } else {
+    return newValue;
+  }
+
+  return removeSpaces(newValue, counter + 1);
+};
+
 /**
  * Better formatting for dates
  * @param iCalDate

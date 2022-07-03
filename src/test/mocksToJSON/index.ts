@@ -11,7 +11,7 @@ import { oneAttendee } from './oneAttendee';
 import { tzidDateCETWrongFormat } from './tzidDateCETWrongFormat';
 import { wrongFormatCalendar } from './wrongFormatCalendar';
 import { wrongFormatEvent } from './wrongFormatEvent';
-import { twoAttendees } from './twoAttendees';
+import { twoAttendees, twoAttendeesWithSpacesInEmail } from './twoAttendees';
 import { simpleDateWithoutTime } from './simpleDateWithoutTime';
 import { notSupportedProperties } from './notSupportedProperties';
 import {
@@ -46,4 +46,5 @@ export default {
   withExceptions,
   withMultipleExceptions,
   simpleDateWithZWithArtifacts,
+  twoAttendeesWithSpacesInEmail,
 };
