@@ -218,4 +218,20 @@ describe('Parse to JSON from string', function () {
       'FREQ=WEEKLY;INTERVAL=1;BYDAY=MO'
     );
   });
+
+  it('Format attendees emails without spaces', function () {
+    const parsedEvent = ICalParser.toJSON(mocks.twoAttendeesWithSpacesInEmail);
+
+    assert.equal(parsedEvent.errors.length, 0);
+    assert.equal(parsedEvent.events.length, 1);
+
+    const event = parsedEvent.events[0];
+    const attendee1 = event.attendee?.[0];
+    const attendee2 = event.attendee?.[1];
+
+    assert.equal(attendee1?.mailto, 'bata123@test2.org');
+    assert.equal(attendee1?.EMAIL, 'bata123@test2.org');
+    assert.equal(attendee2?.mailto, 'abada@test2.org');
+    assert.equal(attendee2?.EMAIL, 'abada@test2.org');
+  });
 });

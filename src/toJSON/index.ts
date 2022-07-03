@@ -7,7 +7,7 @@ import {
   KeyValue,
   TodoJSON,
 } from '../index';
-import { parseICalDate, removeArtifacts } from './dateHelpers';
+import { parseICalDate, removeArtifacts, removeSpaces } from './dateHelpers';
 import {
   ALWAYS_STRING_VALUES,
   ATTENDEE_KEY,
@@ -263,24 +263,29 @@ const parseNestedValues = (values: string): KeyValue | string => {
 
     const { key, value } = keyValue;
 
+    let newValue = value;
+    if (key === 'email') {
+      newValue = removeSpaces(newValue);
+    }
+
     // ** Handle exception with date in nested value ** //
     // f.e. date without time
-    if (key === 'value' && value.indexOf('DATE') !== -1) {
-      result = normalizeString(value.slice(value.indexOf('DATE')));
-    } else if (value.indexOf(MAILTO_KEY_WITH_DELIMITER) !== -1) {
+    if (key === 'value' && newValue.indexOf('DATE') !== -1) {
+      result = normalizeString(value.slice(newValue.indexOf('DATE')));
+    } else if (newValue.indexOf(MAILTO_KEY_WITH_DELIMITER) !== -1) {
       result[key.toUpperCase()] = normalizeString(
-        value
-          .slice(0, value.indexOf(MAILTO_KEY_WITH_DELIMITER))
+        newValue
+          .slice(0, newValue.indexOf(MAILTO_KEY_WITH_DELIMITER))
           .replace(' ', '')
       );
       result[MAILTO_KEY] = normalizeString(
-        value.slice(
-          value.indexOf(`${MAILTO_KEY_WITH_DELIMITER}:`) +
+        newValue.slice(
+          newValue.indexOf(`${MAILTO_KEY_WITH_DELIMITER}:`) +
             `${MAILTO_KEY_WITH_DELIMITER}:`.length
         )
       );
     } else {
-      result[key.toUpperCase()] = normalizeString(value);
+      result[key.toUpperCase()] = normalizeString(newValue);
     }
   }
 
