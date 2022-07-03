@@ -1,3 +1,6 @@
+# 0.6.10
+- fixed parsing emails
+
 # 0.6.1
 - fixed parsing exceptions to string
 
