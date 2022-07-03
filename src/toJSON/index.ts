@@ -7,7 +7,7 @@ import {
   KeyValue,
   TodoJSON,
 } from '../index';
-import { parseICalDate, removeArtifacts, removeSpaces } from './dateHelpers';
+import { parseICalDate, removeArtifacts } from './dateHelpers';
 import {
   ALWAYS_STRING_VALUES,
   ATTENDEE_KEY,
@@ -264,8 +264,9 @@ const parseNestedValues = (values: string): KeyValue | string => {
     const { key, value } = keyValue;
 
     let newValue = value;
-    if (key === 'email') {
-      newValue = removeSpaces(newValue);
+
+    if (key === 'email' || key === 'cn' || key === 'mailto') {
+      newValue = removeArtifacts(newValue);
     }
 
     // ** Handle exception with date in nested value ** //

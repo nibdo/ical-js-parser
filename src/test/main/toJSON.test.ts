@@ -232,6 +232,6 @@ describe('Parse to JSON from string', function () {
     assert.equal(attendee1?.mailto, 'bata123@test2.org');
     assert.equal(attendee1?.EMAIL, 'bata123@test2.org');
     assert.equal(attendee2?.mailto, 'abada@test2.org');
-    assert.equal(attendee2?.EMAIL, 'abada@test2.org');
+    assert.equal(attendee2?.CN, 'abada@test2.org');
   });
 });
