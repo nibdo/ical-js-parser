@@ -31,7 +31,7 @@ export const formatAlarmsToString = (alarms: Alarm[]): string => {
 
   alarms.forEach((item) => {
     result += 'BEGIN:VALARM\n';
-    result += foldLine(mapAlarmObjToString(item));
+    result += foldLine(mapAlarmObjToString(item), true);
     result += 'END:VALARM\n';
   });
 

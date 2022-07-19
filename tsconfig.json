@@ -3,7 +3,7 @@
     "module": "commonjs",
     "target": "es5",
     "jsx": "react",
-    "lib": ["es2017", "es7", "es6", "dom"],
+    "lib": ["es2021", "es2017", "es7", "es6", "dom"],
     "declaration": true,
     "outDir": "dist",
     "strict": true,
