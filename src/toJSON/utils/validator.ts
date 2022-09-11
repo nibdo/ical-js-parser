@@ -5,12 +5,10 @@ import {
   CALENDAR_END_KEY_VALUE,
   EVENT_BEGIN_KEY_VALUE,
   EVENT_END_KEY_VALUE,
-  INVALID_DATE_ERROR,
   TODO_BEGIN_KEY_VALUE,
   TODO_END_KEY_VALUE,
-  WRONG_FORMAT_ERROR,
-} from '../constants';
-import { ERROR_MSG } from '../enums';
+} from '../../constants';
+import { ERROR_MSG } from '../../enums';
 
 export const validateISOStringDate = (stringDate: string): void => {
   if (!DateTime.fromISO(stringDate).isValid) {

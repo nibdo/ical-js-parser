@@ -1,5 +1,5 @@
-const CET_LONG_FORMAT: string = 'Central European Standard Time';
-const CET_ICS_FORMAT: string = 'CET';
+const CET_LONG_FORMAT = 'Central European Standard Time';
+const CET_ICS_FORMAT = 'CET';
 
 /**
  * Parse different formats of timezone to recognizable output

@@ -1,27 +1,27 @@
-import { nestedPropsSummary } from './nestedPropsSummary';
 import { dateWithTimezoneToISO } from './dateWithTimezoneToISO';
+import { invalidDate1, wrongDateWithTime } from './wrongDateWithTime';
+import { nestedPropsSummary } from './nestedPropsSummary';
+import { notSupportedProperties } from './notSupportedProperties';
+import { oneAttendee } from './oneAttendee';
 import {
   simpleDateWithZ,
   simpleDateWithZWithArtifacts,
 } from './simpleDateWithZ';
-import { simpleDateWithoutZ } from './simpleDateWithoutZ';
-import { wrongDateWithoutTime } from './wrongDateWithoutTime';
-import { invalidDate1, wrongDateWithTime } from './wrongDateWithTime';
-import { oneAttendee } from './oneAttendee';
-import { tzidDateCETWrongFormat } from './tzidDateCETWrongFormat';
-import { wrongFormatCalendar } from './wrongFormatCalendar';
-import { wrongFormatEvent } from './wrongFormatEvent';
-import { twoAttendees, twoAttendeesWithSpacesInEmail } from './twoAttendees';
 import { simpleDateWithoutTime } from './simpleDateWithoutTime';
-import { notSupportedProperties } from './notSupportedProperties';
+import { simpleDateWithoutZ } from './simpleDateWithoutZ';
+import { timeFormats } from './timeFormats';
+import { twoAttendees, twoAttendeesWithSpacesInEmail } from './twoAttendees';
+import { tzidDateCETWrongFormat } from './tzidDateCETWrongFormat';
 import {
   withAlarms,
   withAlarmsNested,
   withNotSupportedAlarm,
 } from './withAlarms';
-import { withTodos } from './withTodos';
-import { timeFormats } from './timeFormats';
 import { withExceptions, withMultipleExceptions } from './withExceptions';
+import { withTodos } from './withTodos';
+import { wrongDateWithoutTime } from './wrongDateWithoutTime';
+import { wrongFormatCalendar } from './wrongFormatCalendar';
+import { wrongFormatEvent } from './wrongFormatEvent';
 
 export default {
   nestedPropsSummary,

@@ -1,4 +1,4 @@
-import { timezoneParser } from '../../toJSON/timezoneParser';
+import { timezoneParser } from '../../toJSON/utils/timezoneParser';
 
 const assert = require('assert');
 

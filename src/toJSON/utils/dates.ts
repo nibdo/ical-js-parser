@@ -1,6 +1,6 @@
-import { timezoneParser } from './timezoneParser';
 import { DateTime } from 'luxon';
-import { DateTimeObject } from '../index';
+import { DateTimeObject } from '../../index';
+import { timezoneParser } from './timezoneParser';
 
 /**
  * Format to ISO date
@@ -15,11 +15,7 @@ export const formatToIsoDate = (date: string): string => {
   const hour: string = baseDate.slice(8, 10);
   const minute: string = baseDate.slice(10, 12);
 
-  const result: string = `${year}${month}${day}T${hour}${minute}00Z`;
-
-  // validateISOStringDate(result);
-
-  return result;
+  return `${year}${month}${day}T${hour}${minute}00Z`;
 };
 
 export const formatTzidDate = (date: string, baseString?: string): string => {
@@ -32,7 +28,7 @@ export const formatTzidDate = (date: string, baseString?: string): string => {
   const minute: string = baseDate.slice(10, 12);
   const seconds: string = baseDate.slice(12, 14);
 
-  const result: string = `${year}${month}${day}T${hour}${minute}${seconds}`;
+  const result = `${year}${month}${day}T${hour}${minute}${seconds}`;
 
   return result;
 };
@@ -64,8 +60,8 @@ export const getBaseDate = (date: string): string => {
   return result;
 };
 
-export const removeArtifacts = (value: string, counter: number = 0): string => {
-  if (counter > 30) {
+export const removeArtifacts = (value: string, counter = 0): string => {
+  if (counter > 150) {
     return value;
   }
 
@@ -85,7 +81,7 @@ export const removeArtifacts = (value: string, counter: number = 0): string => {
   return removeArtifacts(newValue, counter + 1);
 };
 
-export const removeSpaces = (value: string, counter: number = 0): string => {
+export const removeSpaces = (value: string, counter = 0): string => {
   if (counter > 30) {
     return value;
   }
@@ -129,7 +125,7 @@ export const parseICalDate = (iCalDate: string): DateTimeObject => {
     const month: string = baseDate.slice(4, 6);
     const day: string = baseDate.slice(6, 8);
 
-    const dateString: string = `${year}${month}${day}`;
+    const dateString = `${year}${month}${day}`;
 
     if (
       !dateString ||
@@ -156,7 +152,7 @@ export const parseICalDate = (iCalDate: string): DateTimeObject => {
 
     const dateExtracted = iCalDate?.split(':')?.[1];
     const baseDate: string = getBaseDate(dateExtracted);
-    let resultDate: string = formatTzidDate(dateExtracted, baseDate);
+    const resultDate: string = formatTzidDate(dateExtracted, baseDate);
 
     const zuluDate = DateTime.fromFormat(baseDate, 'yyyyLLddHHmmss', {
       zone: timezoneParsed,
