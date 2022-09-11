@@ -1,3 +1,7 @@
+# 0.7.0
+- fixed formatting issues for long texts
+- refactoring
+
 # 0.6.10
 - fixed parsing emails
 
