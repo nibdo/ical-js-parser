@@ -1,5 +1,4 @@
-import { formatToIsoDate, parseICalDate } from '../../toJSON/dateHelpers';
-import { ERROR_MSG } from '../../enums';
+import { formatToIsoDate, parseICalDate } from '../../toJSON/utils/dates';
 
 const assert = require('assert');
 

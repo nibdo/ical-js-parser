@@ -1,7 +1,6 @@
+import { ERROR_MSG } from '../../enums';
 import ICalParser from '../../index';
 import mocks from '../mocksToJSON';
-import { ERROR_MSG } from '../../enums';
-import { timeFormats } from '../mocksToJSON/timeFormats';
 
 const assert = require('assert');
 

@@ -11,20 +11,26 @@ export const ALWAYS_STRING_VALUES: string[] = [
   'summary',
   'description',
   'location',
+  '"summary',
+  '"description',
+  '"location',
 ];
 
-export const MAILTO_KEY_WITH_DELIMITER: string = ':mailto';
-export const MAILTO_KEY: string = 'mailto';
+export const MAILTO_KEY_WITH_DELIMITER = ':mailto';
+export const MAILTO_KEY = 'mailto';
 
-export const RRULE_KEY: string = 'rrule';
-export const RRULE_ICAL_KEY: string = 'RRULE';
+export const RRULE_KEY = 'rrule';
+export const RRULE_ICAL_KEY = 'RRULE';
 
-export const EXDATE_KEY: string = 'exdate';
-export const ATTENDEE_KEY: string = 'attendee';
-export const ORGANIZER_KEY: string = 'organizer';
-export const ALARMS_KEY: string = 'alarms';
+export const EXDATE_KEY = 'exdate';
+export const ATTENDEE_KEY = 'attendee';
+export const ORGANIZER_KEY = 'organizer';
+export const ALARMS_KEY = 'alarms';
 
-export const UID_KEY: string = 'uid';
+export const UID_KEY = 'uid';
 
-export const INVALID_DATE_ERROR: string = 'Date is not valid';
-export const WRONG_FORMAT_ERROR: string = 'Wrong format';
+export const INVALID_DATE_ERROR = 'Date is not valid';
+export const WRONG_FORMAT_ERROR = 'Wrong format';
+
+export const CALENDAR_BEGIN = 'BEGIN:VCALENDAR\n';
+export const CALENDAR_END = 'END:VCALENDAR';

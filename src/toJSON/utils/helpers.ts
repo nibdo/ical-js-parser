@@ -1,5 +1,10 @@
-import { EXDATE_KEY, RECURSION_MAX_COUNT } from '../constants';
-import { ExtractProperty } from '../interface';
+import {
+  EVENT_BEGIN_KEY_VALUE,
+  EXDATE_KEY,
+  RECURSION_MAX_COUNT,
+  TODO_BEGIN_KEY_VALUE,
+} from '../../constants';
+import { ExtractProperty } from '../../interface';
 
 /**
  * Remove unwanted properties in recursion
@@ -68,55 +73,24 @@ export const extractProperty = (
   }
 };
 
-/**
- * Split string data sets to array
- * @param iCalEvents
- */
-export const splitDataSetsByKey = (stringData: string, key: string) => {
-  // Get array of events
-  let result: any = stringData.split(key).slice(1);
-
-  if (!result) {
-    return '';
-  }
-
-  // Add missing delimiter from split to each record
-  result = result.map((item: string) => `${key}${item}`);
-
-  return result;
-};
-
-export const removeSpaceAndNewLine = (
-  value: string,
-  counter: number = 0
-): string => {
-  const hasSpace = value.indexOf(' ') !== -1;
-  const hasNewLine = value.indexOf('\n') !== -1;
-
-  if (counter > 1000) {
-    return value;
-  }
-
-  if (!hasSpace && !hasNewLine) {
-    return value;
-  }
-
-  let result = value;
-
-  if (hasSpace) {
-    result = result.replace(' ', '');
-  }
-  if (hasNewLine) {
-    result = result.replace('\n', '');
-  }
-
-  return removeSpaceAndNewLine(result, counter + 1);
-};
-
 export const isExDateArray = (key: string, value: string) => {
   if (key === EXDATE_KEY && value.indexOf(',') !== -1) {
     return true;
   }
 
   return false;
+};
+
+/**
+ * Extract only calendar string part
+ * @param iCalString
+ */
+export const getVCalendarString = (iCalString: string): string => {
+  let firstItemIndex = iCalString.indexOf(EVENT_BEGIN_KEY_VALUE);
+
+  if (firstItemIndex === -1) {
+    firstItemIndex = iCalString.indexOf(TODO_BEGIN_KEY_VALUE);
+  }
+
+  return iCalString.slice(0, firstItemIndex);
 };
