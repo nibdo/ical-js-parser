@@ -135,7 +135,7 @@ describe('Parse to JSON from string', function () {
 
     assert.equal(organizer?.mailto, 'buia@test.com');
     assert.equal(attendee?.length, 1);
-    assert.equal(firstAttendee?.mailto, 'bata123@test2.org');
+    assert.equal(firstAttendee?.mailto, 'abcdexabcdefgh@abcde.com');
     assert.equal(firstAttendee?.PARTSTAT, 'ACCEPTED');
     assert.equal(firstAttendee?.CUTYPE, 'INDIVIDUAL');
     assert.equal(firstAttendee?.ROLE, 'REQ-PARTICIPANT');
@@ -172,12 +172,16 @@ describe('Parse to JSON from string', function () {
   });
 
   it('Format various date times', function () {
-    const parsedEvent = ICalParser.toJSON(mocks.timeFormats);
+    const parsedEvent = ICalParser.toJSON(mocks.timeFormats, 'Europe/Berlin');
 
-    assert.equal(parsedEvent.errors.length, 1);
-    assert.equal(parsedEvent.events.length, 3);
+    assert.equal(parsedEvent.errors.length, 0);
+    assert.equal(parsedEvent.warnings.length, 2);
+    assert.equal(parsedEvent.events.length, 4);
 
-    assert.equal(parsedEvent.errors[0], 'unsupported zone US-Eastern');
+    assert.equal(
+      parsedEvent.warnings[0],
+      'Invalid timezone US-Eastern replaced with fallback timezone Europe/Berlin'
+    );
 
     assert.equal(parsedEvent.events[0].dtstart.value, '20200616T060000');
     assert.equal(parsedEvent.events[0].dtend.value, '20200616T060000');

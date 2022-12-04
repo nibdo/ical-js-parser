@@ -29,6 +29,7 @@ export const alarmsData: ICalJSON = {
       dtstart: { value: '2021-04-01T10:00:00Z' },
       dtend: { value: '2021-04-01T10:30:00Z' },
       sequence: '1',
+      xDefaultAlarm: { VALUE: 'BOOLEAN:TRUE' },
       end: 'VEVENT',
     },
   ],

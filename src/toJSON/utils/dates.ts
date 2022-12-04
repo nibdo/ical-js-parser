@@ -100,8 +100,14 @@ export const removeSpaces = (value: string, counter = 0): string => {
 /**
  * Better formatting for dates
  * @param iCalDate
+ * @param warnings
+ * @param fallbackTimezone
  */
-export const parseICalDate = (iCalDate: string): DateTimeObject => {
+export const parseICalDate = (
+  iCalDate: string,
+  warnings: string[],
+  fallbackTimezone?: string
+): DateTimeObject => {
   // No special handling for other dates
   const isTzidDate: boolean = iCalDate.indexOf('TZID') !== -1;
   const isAllDayEvent: boolean = iCalDate.indexOf('DATE:') !== -1;
@@ -146,7 +152,7 @@ export const parseICalDate = (iCalDate: string): DateTimeObject => {
   if (isTzidDate) {
     const timezone: string = iCalDate?.split(':')?.[0];
 
-    const timezoneParsed: string = timezoneParser(
+    let timezoneParsed: string = timezoneParser(
       timezone?.slice(timezone?.indexOf('TZID=') + 'TZID='.length)
     );
 
@@ -154,12 +160,28 @@ export const parseICalDate = (iCalDate: string): DateTimeObject => {
     const baseDate: string = getBaseDate(dateExtracted);
     const resultDate: string = formatTzidDate(dateExtracted, baseDate);
 
-    const zuluDate = DateTime.fromFormat(baseDate, 'yyyyLLddHHmmss', {
+    let zuluDate = DateTime.fromFormat(baseDate, 'yyyyLLddHHmmss', {
       zone: timezoneParsed,
     }).toUTC();
 
     if (zuluDate.invalidReason === 'unsupported zone') {
-      throw Error(`${zuluDate?.invalidReason} ${timezoneParsed}`);
+      // replace invalid timezone with optional fallbackTimezone
+      // caution as this might render event in incorrect time, but is
+      // mitigation for cases when named timezones like Central European
+      // Time
+      if (fallbackTimezone) {
+        zuluDate = DateTime.fromFormat(baseDate, 'yyyyLLddHHmmss', {
+          zone: fallbackTimezone,
+        }).toUTC();
+
+        warnings.push(
+          `Invalid timezone ${timezoneParsed} replaced with fallback timezone ${fallbackTimezone}`
+        );
+
+        timezoneParsed = fallbackTimezone;
+      } else {
+        throw Error(`${zuluDate?.invalidReason} ${timezoneParsed}`);
+      }
     }
     if (
       !zuluDate ||

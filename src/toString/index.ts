@@ -14,6 +14,7 @@ import {
 import { checkIfIsDateKeyToString } from '../common';
 import {
   foldLine,
+  mapGeneralObjToString,
   mapObjToString,
   parseNewLine,
   transformToICalKey,
@@ -57,9 +58,15 @@ export const buildString = (
           break;
         default:
           result +=
-            foldLine(
-              `${transformToICalKey(key)}${delimiter}${parseNewLine(valueAny)}`
-            ) + '\n';
+            typeof valueAny === 'string'
+              ? foldLine(
+                  `${transformToICalKey(key)}${delimiter}${parseNewLine(
+                    valueAny
+                  )}`
+                ) + '\n'
+              : `${transformToICalKey(key)};${mapGeneralObjToString(
+                  valueAny
+                )}` + '\n';
       }
     }
   }

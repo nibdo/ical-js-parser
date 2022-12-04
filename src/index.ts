@@ -1,8 +1,8 @@
-import toString from './toString';
 import toJSON from './toJSON';
+import toString from './toString';
 
 export interface ICalParser {
-  toJSON: (item: string) => ICalJSON;
+  toJSON: (item: string, fallbackTimezone?: string) => ICalJSON;
   toString: (item: ICalFromJSONData) => string;
 }
 
@@ -31,6 +31,7 @@ export interface Attendee {
   CN?: string;
   mailto: string;
   XNUMGUESTS?: string;
+  [key: string]: any;
 }
 
 export interface Alarm {
@@ -86,6 +87,7 @@ export interface ICalJSON {
   calendar: CalendarJSON;
   events: EventJSON[];
   todos: TodoJSON[];
+  warnings: string[];
   errors: string[];
 }
 

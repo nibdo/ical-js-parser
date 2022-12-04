@@ -40,12 +40,12 @@ describe('Parse to String from JSON', function () {
     );
     assert.equal(
       lines[19],
-      ' j fiajf ijaij sij jf ajoif jajsifj a jsij fiajs ifjas jfiojas fjas' +
-        ' jfjas '
+      ' ij fiajf ijaij sij jf ajoif jajsifj a jsij fiajs ifjas jfiojas fjas' +
+        ' jfjas'
     );
     assert.equal(
       lines[20],
-      ' jf i jsifj iasjfijas ijfi ajsif jiasj fijas fja fjioasj ojasfj'
+      ' ijf i jsifj iasjfijas ijfi ajsif jiasj fijas fja fjioasj ojasfj'
     );
     assert.equal(lines[21], 'END:VEVENT');
     assert.equal(lines[22], 'END:VCALENDAR');
@@ -66,20 +66,24 @@ describe('Parse to String from JSON', function () {
     assert.equal(lines[8], 'ORGANIZER;CN=buia:mailto:buia@test.com');
     assert.equal(
       lines[9],
-      'ATTENDEE;PARTSTAT=ACCEPTED;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;EMAIL=ba'
+      'ATTENDEE;CN=abcde@abcdefghijkl.co;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTI'
     );
-    assert.equal(lines[10], ' ta123@test2.org:mailto:bata123@test2.org');
     assert.equal(
-      lines[11],
+      lines[10],
+      ' ON;ABCTOKEN=12345673d89123cABCDcbe611234b7a1a123a1b2c311:mailto:abcde@abc'
+    );
+    assert.equal(lines[11], ' defghijkl.co');
+    assert.equal(
+      lines[12],
       'ATTENDEE;PARTSTAT=DECLINED;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;EMAIL=ab'
     );
-    assert.equal(lines[12], ' ada@test2.org:mailto:abada@test2.org');
-    assert.equal(lines[13], 'DTSTART:20210401T100000Z');
-    assert.equal(lines[14], 'DTEND:20210401T103000Z');
-    assert.equal(lines[15], 'SEQUENCE:1');
-    assert.equal(lines[16], 'X-TEST-SAMPLE:test');
-    assert.equal(lines[17], 'END:VEVENT');
-    assert.equal(lines[18], 'END:VCALENDAR');
+    assert.equal(lines[13], ' ada@test2.org:mailto:abada@test2.org');
+    assert.equal(lines[14], 'DTSTART:20210401T100000Z');
+    assert.equal(lines[15], 'DTEND:20210401T103000Z');
+    assert.equal(lines[16], 'SEQUENCE:1');
+    assert.equal(lines[17], 'X-TEST-SAMPLE:test');
+    assert.equal(lines[18], 'END:VEVENT');
+    assert.equal(lines[19], 'END:VCALENDAR');
   });
   it('should return string iCal event with dates without time', function () {
     const parsedEvent = ICalParser.toString(mocks.dateWithoutTime);
@@ -128,22 +132,22 @@ describe('Parse to String from JSON', function () {
     );
     assert.equal(
       lines[6],
-      ' ESTTEST. TEST TEST TEST DEFAAA, TEST TEST TESTTEST' +
-        ' VRATESTTESTTESTTESTTES'
+      ' TESTTEST. TEST TEST TEST DEFAAA, TEST TEST TESTTEST VRATESTTESTTESTTESTTE'
     );
     assert.equal(
       lines[7],
-      ' TESTTESTTEST TEST TEST TEST GBTAS 1TEST 2TEST 3TEST 4TEST 5TEST 6TEST 7TE'
+      ' ST TESTTESTTEST TEST TEST TEST GBTAS 1TEST 2TEST 3TEST 4TEST 5TEST' +
+        ' 6TEST '
     );
     assert.equal(
       lines[8],
-      ' ST. Test test 4 Teset test-Tetsetset 1test 2test 3tsets 4tsets 5test 6tse'
+      ' 7TEST. Test test 4 Teset test-Tetsetset 1test 2test 3tsets 4tsets 5test 6'
     );
     assert.equal(
       lines[9],
-      ' 7tset TEST-TEST testet.\\n\\nTEST TESTTEST TEST.TEST.TEST TEST TESTTESTTEST'
+      ' tset 7tset TEST-TEST testet.\\n\\nTEST TESTTEST TEST.TEST.TEST TEST TESTTES'
     );
-    assert.equal(lines[10], ' END');
+    assert.equal(lines[10], ' TTEST END');
     assert.equal(
       lines[11],
       'UID:040000008200E00074C5B7101A82E00800000000DF9560970228D701000000000000000'

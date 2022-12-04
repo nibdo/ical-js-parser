@@ -24,5 +24,6 @@ describe('Parse to String from JSON with alarms', function () {
     assert.equal(lines[16], 'X-SAMPLE-TEST:test');
     assert.equal(lines[17], 'END:VALARM');
     assert.equal(lines[18], 'DTSTART:20210401T100000Z');
+    assert.equal(lines[21], 'X-DEFAULT-ALARM;VALUE=BOOLEAN:TRUE');
   });
 });
