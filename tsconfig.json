@@ -23,6 +23,7 @@
     "node_modules",
     "dist",
     "src/test",
+    "example"
   ],
   "baseUrl": "src",
   "include": [

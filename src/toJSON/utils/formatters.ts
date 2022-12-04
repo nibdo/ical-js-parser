@@ -248,8 +248,14 @@ export const parseNestedValues = (values: string): KeyValue | string => {
 /**
  * Split string to separate key and value
  * @param item
+ * @param warnings
+ * @param fallbackTimezone
  */
-export const splitRowToKeyValueObj = (item: string): KeyValue => {
+export const splitRowToKeyValueObj = (
+  item: string,
+  warnings: string[],
+  fallbackTimezone?: string
+): KeyValue => {
   // Get basic delimiter indexes
   const basicDelimiterIndex: number = item.indexOf(':');
   const nestedDelimiterIndex: number = item.indexOf(';');
@@ -292,10 +298,19 @@ export const splitRowToKeyValueObj = (item: string): KeyValue => {
     if (isExDateArray(key, value)) {
       const arrayValues = removeSpaceAndNewLine(value).split(',');
       value = arrayValues.map(
-        (value) => parseICalDate(removeArtifacts(value)) as DateTimeObject
+        (value) =>
+          parseICalDate(
+            removeArtifacts(value),
+            warnings,
+            fallbackTimezone
+          ) as DateTimeObject
       );
     } else {
-      value = parseICalDate(removeArtifacts(value)) as DateTimeObject;
+      value = parseICalDate(
+        removeArtifacts(value),
+        warnings,
+        fallbackTimezone
+      ) as DateTimeObject;
     }
   }
 
@@ -316,13 +331,19 @@ export const splitRowToKeyValueObj = (item: string): KeyValue => {
 
 export const formatStringToKeyValueObj = (
   stringValue: string,
-  eventObj: any
+  eventObj: any,
+  warnings: string[],
+  fallbackTimezone?: string
 ) => {
   const eventWithMergedRows: string[] = splitRowsToArray(stringValue);
 
   for (const stringEvent of eventWithMergedRows) {
     const joinedWords = removeArtifacts(joinWords(stringEvent));
-    const keyValue: KeyValue = splitRowToKeyValueObj(joinedWords);
+    const keyValue: KeyValue = splitRowToKeyValueObj(
+      joinedWords,
+      warnings,
+      fallbackTimezone
+    );
 
     const { key, value } = keyValue;
 
@@ -353,14 +374,15 @@ export const formatStringToKeyValueObj = (
  * @param calendarString
  */
 export const formatVCalendarStringToObject = (
-  calendarString: string
+  calendarString: string,
+  warnings: string[]
 ): CalendarJSON => {
   const calendarRows: string[] = splitRowsToArray(calendarString);
 
   const result: any = {};
 
   for (const row of calendarRows) {
-    const keyValue: KeyValue = splitRowToKeyValueObj(row);
+    const keyValue: KeyValue = splitRowToKeyValueObj(row, warnings);
 
     const { key, value } = keyValue;
 

@@ -1,6 +1,7 @@
 import { MAX_LINE_LENGTH } from '../../common';
 
-export const parseNewLine = (value: string) => value.replaceAll('\n', '\\n');
+export const parseNewLine = (value: string) =>
+  value ? value.replaceAll('\n', '\\n') : '';
 
 const parseWithEmptySpace = (text: string, index: number) => {
   if (index === 0) {
@@ -30,7 +31,12 @@ const splitByMaxLength = (text: string) => {
         `${parseWithEmptySpace(reminder, index).slice(0, MAX_LINE_LENGTH - 1)}`
       );
 
-      reminder = reminder.slice(MAX_LINE_LENGTH - 1);
+      // handle shift because of added empty space
+      if (index > 0) {
+        reminder = reminder.slice(MAX_LINE_LENGTH - 2);
+      } else {
+        reminder = reminder.slice(MAX_LINE_LENGTH - 1);
+      }
     }
 
     index++;
@@ -55,7 +61,6 @@ const splitToRows = (text: string) => {
       reminder = '';
     } else if (parsedItem.length > MAX_LINE_LENGTH) {
       const subArray = splitByMaxLength(parsedItem);
-
       let subIndex = 0;
       for (const subItem of subArray) {
         result +=
@@ -134,6 +139,19 @@ export const transformToICalKey = (key: string): string => {
   }
 
   return result;
+};
+
+export const mapGeneralObjToString = (obj: any): string => {
+  let result = '';
+
+  for (const [key, value] of Object.entries(obj)) {
+    result = result + key.toUpperCase() + '=' + value + ';';
+  }
+
+  const endingNeedsSlice =
+    result.slice(result.length - 1, result.length) === ';';
+
+  return endingNeedsSlice ? result.slice(0, result.length - 1) : result;
 };
 
 export const mapObjToString = (obj: any): string => {

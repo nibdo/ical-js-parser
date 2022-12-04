@@ -39,7 +39,11 @@ const splitStringEvents = (
   return result;
 };
 
-const getResult = (rawString: string) => {
+const getResult = (
+  rawString: string,
+  warnings: string[],
+  fallbackTimezone?: string
+) => {
   const eventObj: any = {};
 
   // extract VALARMS from string
@@ -50,7 +54,7 @@ const getResult = (rawString: string) => {
   const alarmsString = extractedProperty;
 
   // Format event string, merge multiline values
-  formatStringToKeyValueObj(mainProperty, eventObj);
+  formatStringToKeyValueObj(mainProperty, eventObj, warnings, fallbackTimezone);
 
   // format alarms
   if (alarmsString && alarmsString.length > 0) {
@@ -59,7 +63,7 @@ const getResult = (rawString: string) => {
 
     alarmStrings.forEach((item) => {
       const alarmObj: any = {};
-      formatStringToKeyValueObj(item, alarmObj);
+      formatStringToKeyValueObj(item, alarmObj, warnings);
 
       const cleanedAlarm = cleanAlarmObj(alarmObj);
       if (cleanedAlarm) {
@@ -70,20 +74,29 @@ const getResult = (rawString: string) => {
 
   return eventObj;
 };
-const getOneEventJSON = (rawString: string): EventJSON => {
-  return getResult(rawString);
+const getOneEventJSON = (
+  rawString: string,
+  warnings: string[],
+  fallbackTimezone?: string
+): EventJSON => {
+  return getResult(rawString, warnings, fallbackTimezone);
 };
-const getOneTodoJSON = (rawString: string): TodoJSON => {
-  return getResult(rawString);
+const getOneTodoJSON = (rawString: string, warnings: string[]): TodoJSON => {
+  return getResult(rawString, warnings);
 };
 
 /**
  * Main function
  * Get key values from each line to build obj
  * @param iCalStringEvent
+ * @param fallbackTimezone
  */
-const toJSON = (iCalStringEvent: string): ICalJSON => {
+const toJSON = (
+  iCalStringEvent: string,
+  fallbackTimezone?: string
+): ICalJSON => {
   const errors: string[] = [];
+  const warnings: string[] = [];
   const events: EventJSON[] = [];
   const todos: TodoJSON[] = [];
 
@@ -102,6 +115,7 @@ const toJSON = (iCalStringEvent: string): ICalJSON => {
       },
       events,
       todos,
+      warnings,
       errors,
     };
   }
@@ -109,13 +123,15 @@ const toJSON = (iCalStringEvent: string): ICalJSON => {
   // Get vcalendar props
   const vCalendarString: string = getVCalendarString(iCalStringEvent);
 
-  const calendar = formatVCalendarStringToObject(vCalendarString);
+  const calendar = formatVCalendarStringToObject(vCalendarString, warnings);
 
   // Get base content
-  const baseCalendarContent: string = iCalStringEvent.slice(
+  let baseCalendarContent: string = iCalStringEvent.slice(
     vCalendarString.length,
     iCalStringEvent.length - CALENDAR_END_KEY_VALUE.length
   );
+
+  baseCalendarContent = baseCalendarContent.replaceAll('MAILTO:', 'mailto:');
 
   // Extract vtodos
   const { mainProperty, extractedProperty } = extractProperty(
@@ -143,7 +159,7 @@ const toJSON = (iCalStringEvent: string): ICalJSON => {
   // Parse each event to obj
   vEventsArray.forEach((stringEvent: string) => {
     try {
-      const event = getOneEventJSON(stringEvent);
+      const event = getOneEventJSON(stringEvent, warnings, fallbackTimezone);
 
       events.push(event);
     } catch (e: any) {
@@ -153,7 +169,7 @@ const toJSON = (iCalStringEvent: string): ICalJSON => {
 
   vTodosArray.forEach((stringTodo: string) => {
     try {
-      const todo = getOneTodoJSON(stringTodo);
+      const todo = getOneTodoJSON(stringTodo, warnings);
 
       todos.push(todo);
     } catch (e: any) {
@@ -166,6 +182,7 @@ const toJSON = (iCalStringEvent: string): ICalJSON => {
     events,
     todos,
     errors,
+    warnings,
   };
 };
 

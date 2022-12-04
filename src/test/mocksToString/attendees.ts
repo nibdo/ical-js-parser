@@ -7,6 +7,8 @@ export const attendeesTestData: ICalJSON = {
     version: '1',
     end: 'VCALENDAR',
   },
+  todos: [],
+  errors: [],
   events: [
     {
       begin: 'VEVENT',
@@ -17,11 +19,11 @@ export const attendeesTestData: ICalJSON = {
       organizer: { CN: 'buia', mailto: 'buia@test.com' },
       attendee: [
         {
-          PARTSTAT: 'ACCEPTED',
-          CUTYPE: 'INDIVIDUAL',
+          CN: 'abcde@abcdefghijkl.co',
           ROLE: 'REQ-PARTICIPANT',
-          EMAIL: 'bata123@test2.org',
-          mailto: 'bata123@test2.org',
+          PARTSTAT: 'NEEDS-ACTION',
+          ABCTOKEN: '12345673d89123cABCDcbe611234b7a1a123a1b2c311',
+          mailto: 'abcde@abcdefghijkl.co',
         },
         {
           PARTSTAT: 'DECLINED',
