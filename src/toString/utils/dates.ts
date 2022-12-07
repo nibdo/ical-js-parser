@@ -1,6 +1,6 @@
 import { DATE_ONLY_LENGTH } from '../../common';
-import { DateTime } from 'luxon';
 import { foldLine, transformToICalKey } from './formatters';
+import Datez from 'datez';
 
 const removeDot = (date: string): string => {
   const indexOfDot: number = date.indexOf('.');
@@ -46,7 +46,7 @@ export const parseUtcDateObj = (utcDate: any): string =>
   addZ(parseUtcToTimestamp(utcDate.value));
 
 export const parseDateWithTimezone = (dateObj: any): string => {
-  const adjustedDateTimeRaw = DateTime.fromISO(dateObj.value, {
+  const adjustedDateTimeRaw = Datez.fromISO(dateObj.value, {
     zone: dateObj.timezone,
   });
 

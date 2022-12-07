@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon';
 import { DateTimeObject } from '../../index';
 import { timezoneParser } from './timezoneParser';
+import Datez from 'datez';
 
 /**
  * Format to ISO date
@@ -160,7 +161,7 @@ export const parseICalDate = (
     const baseDate: string = getBaseDate(dateExtracted);
     const resultDate: string = formatTzidDate(dateExtracted, baseDate);
 
-    let zuluDate = DateTime.fromFormat(baseDate, 'yyyyLLddHHmmss', {
+    let zuluDate = Datez.fromFormat(baseDate, 'yyyyLLddHHmmss', {
       zone: timezoneParsed,
     }).toUTC();
 
