@@ -176,11 +176,11 @@ describe('Parse to JSON from string', function () {
 
     assert.equal(parsedEvent.errors.length, 0);
     assert.equal(parsedEvent.warnings.length, 2);
-    assert.equal(parsedEvent.events.length, 4);
+    assert.equal(parsedEvent.events.length, 5);
 
     assert.equal(
       parsedEvent.warnings[0],
-      'Invalid timezone US-Eastern replaced with fallback timezone Europe/Berlin'
+      'Invalid timezone ABCDE replaced with fallback timezone Europe/Berlin'
     );
 
     assert.equal(parsedEvent.events[0].dtstart.value, '20200616T060000');
