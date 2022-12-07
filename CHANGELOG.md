@@ -1,3 +1,10 @@
+# 0.7.2
+- added support for more timezones
+
+# 0.7.1
+- bug fixes
+- added option for fallback timezone
+
 # 0.7.0
 - fixed formatting issues for long texts
 - refactoring
