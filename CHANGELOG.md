@@ -1,3 +1,6 @@
+# 0.7.3
+- update lib to fix bug with setting timezone
+
 # 0.7.2
 - added support for more timezones
 
