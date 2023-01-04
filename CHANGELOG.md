@@ -1,3 +1,8 @@
+# 0.7.4
+- fixed parsing multiple attachments, thanks to <a href=https://github.com/chatwithrajaram>chatwithrajaram</a>
+- fixed parsing date with date and date-time format, thanks to <a href=https://github.com/AlexanderS>AlexanderS</a>
+
+
 # 0.7.3
 - update lib to fix bug with setting timezone
 
