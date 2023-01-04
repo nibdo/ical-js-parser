@@ -1,12 +1,13 @@
+import {
+  dateTimeDate,
+  simpleDateWithZ,
+  simpleDateWithZWithArtifacts,
+} from './simpleDateWithZ';
 import { dateWithTimezoneToISO } from './dateWithTimezoneToISO';
 import { invalidDate1, wrongDateWithTime } from './wrongDateWithTime';
 import { nestedPropsSummary } from './nestedPropsSummary';
 import { notSupportedProperties } from './notSupportedProperties';
 import { oneAttendee } from './oneAttendee';
-import {
-  simpleDateWithZ,
-  simpleDateWithZWithArtifacts,
-} from './simpleDateWithZ';
 import { simpleDateWithoutTime } from './simpleDateWithoutTime';
 import { simpleDateWithoutZ } from './simpleDateWithoutZ';
 import { timeFormats } from './timeFormats';
@@ -47,4 +48,5 @@ export default {
   withMultipleExceptions,
   simpleDateWithZWithArtifacts,
   twoAttendeesWithSpacesInEmail,
+  dateTimeDate,
 };
