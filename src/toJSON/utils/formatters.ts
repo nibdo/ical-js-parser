@@ -1,6 +1,7 @@
 import {
   ALWAYS_STRING_VALUES,
   ATTENDEE_KEY,
+  ATTACH_KEY,
   EXDATE_KEY,
   MAILTO_KEY,
   MAILTO_KEY_WITH_DELIMITER,
@@ -349,9 +350,9 @@ export const formatStringToKeyValueObj = (
 
     // Handle nested array value, so it does not override with same key like
     // ATTENDEE
-    if (key === ATTENDEE_KEY) {
-      eventObj[ATTENDEE_KEY] = Array.isArray(eventObj[ATTENDEE_KEY])
-        ? [...eventObj[ATTENDEE_KEY], value]
+    if (key === ATTENDEE_KEY || key === ATTACH_KEY) {
+      eventObj[key] = Array.isArray(eventObj[key])
+        ? [...eventObj[key], value]
         : [value];
     } else if (key === EXDATE_KEY) {
       if (Array.isArray(value)) {

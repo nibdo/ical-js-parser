@@ -24,6 +24,7 @@ export const RRULE_ICAL_KEY = 'RRULE';
 
 export const EXDATE_KEY = 'exdate';
 export const ATTENDEE_KEY = 'attendee';
+export const ATTACH_KEY = 'attach';
 export const ORGANIZER_KEY = 'organizer';
 export const ALARMS_KEY = 'alarms';
 
