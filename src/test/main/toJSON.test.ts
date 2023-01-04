@@ -237,4 +237,17 @@ describe('Parse to JSON from string', function () {
     assert.equal(attendee2?.mailto, 'abada@test2.org');
     assert.equal(attendee2?.CN, 'abada@test2.org');
   });
+
+  it('Parse dates with date-time', function () {
+    const parsedEvent = ICalParser.toJSON(mocks.dateTimeDate);
+
+    assert.equal(parsedEvent.errors.length, 0);
+    assert.equal(parsedEvent.events.length, 1);
+
+    const event = parsedEvent.events[0];
+
+    assert.equal(event?.dtstart?.value, '20221004T123000Z');
+    assert.equal(event?.dtend?.value, '20221204');
+    assert.equal(event?.dtend?.isAllDay, true);
+  });
 });

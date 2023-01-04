@@ -115,13 +115,23 @@ export const parseICalDate = (
   const isSimpleDate: boolean = !isTzidDate && !isAllDayEvent;
 
   if (isSimpleDate) {
-    const value = formatToIsoDate(iCalDate);
+    let baseDate = iCalDate;
+
+    if (iCalDate.includes('DATE-TIME:')) {
+      baseDate = iCalDate.slice(
+        iCalDate.indexOf('DATE-TIME:') + 'DATE-TIME:'.length
+      );
+    } else if (iCalDate.includes('DATE:')) {
+      baseDate = iCalDate.slice(iCalDate.indexOf('DATE:') + 'DATE:'.length);
+    }
+
+    const value = formatToIsoDate(baseDate);
 
     if (!DateTime.fromISO(value).isValid) {
       throw Error(`Invalid date: ${value}`);
     }
 
-    return { value: formatToIsoDate(iCalDate) };
+    return { value: formatToIsoDate(baseDate) };
   }
 
   if (isAllDayEvent) {
