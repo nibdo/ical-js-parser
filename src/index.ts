@@ -1,5 +1,5 @@
 import toJSON from './toJSON';
-import toString from './toString';
+import toString from './toText';
 
 export interface ICalParser {
   toJSON: (item: string, fallbackTimezone?: string) => ICalJSON;
