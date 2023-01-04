@@ -4,7 +4,6 @@ import {
   TODO_BEGIN_KEY_VALUE,
 } from '../constants';
 import { EventJSON, ICalJSON, TodoJSON } from '../index';
-import { cleanAlarmObj } from '../toString/utils/alarms';
 import {
   extractProperty,
   getVCalendarString,
@@ -16,6 +15,38 @@ import {
   splitDataSetsByKey,
 } from './utils/formatters';
 import { validateICalString } from './utils/validator';
+
+export const cleanAlarmObj = (alarm: any) => {
+  delete alarm.valar;
+  delete alarm.begin;
+  delete alarm.end;
+
+  // not supported
+  if (alarm.trigger?.RELATED) {
+    return null;
+  }
+
+  if (alarm.trigger?.VALUE) {
+    let parsedValue = alarm.trigger.VALUE;
+
+    if (parsedValue.indexOf('DURATION:') !== -1) {
+      parsedValue = parsedValue.slice('DURATION:'.length);
+    }
+
+    alarm.trigger = parsedValue;
+  }
+
+  // not supported
+  if (alarm.trigger?.indexOf('DATE-TIME') !== -1) {
+    return null;
+  }
+
+  if (alarm.trigger?.indexOf('DT') !== -1) {
+    return null;
+  }
+
+  return alarm;
+};
 
 /**
  * Split string events to array
