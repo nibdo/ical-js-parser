@@ -16,7 +16,7 @@ export const formatToIsoDate = (date: string): string => {
   const hour: string = baseDate.slice(8, 10);
   const minute: string = baseDate.slice(10, 12);
 
-  return `${year}${month}${day}T${hour}${minute}00Z`;
+  return `${year}${month}${day}T${hour}${minute}${date.includes('Z') ? "00Z" : "00"}`;
 };
 
 export const formatTzidDate = (date: string, baseString?: string): string => {
